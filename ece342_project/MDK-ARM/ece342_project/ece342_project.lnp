@@ -3,6 +3,7 @@
 "ece342_project\main.o"
 "ece342_project\stm32f4xx_it.o"
 "ece342_project\stm32f4xx_hal_msp.o"
+"ece342_project\spi.o"
 "ece342_project\stm32f4xx_hal_i2c.o"
 "ece342_project\stm32f4xx_hal_i2c_ex.o"
 "ece342_project\stm32f4xx_hal_rcc.o"

@@ -124,13 +124,38 @@ int main(void)
 	char msg[100];
 	
 	if(value == 0xAD){
-		print_msg("seems ok");
+		print_msg("seems ok\n");
+		sprintf(msg, "tis this (0x%x)\r\n", value);
+		print_msg(msg);
 	}
 	else{
 		sprintf(msg, "Wrong product id (0x%x)\r\n", value);
 		print_msg(msg);
 		//print_msg("No");
 	}
+	
+	//self test mode
+	print_msg("call self test\n");
+	uint8_t self_test=0x01;
+	spi_write(0x2E,&self_test);
+	print_msg("reading x\n");
+	
+	spi_read(0x08, &value); //xdata
+	sprintf(msg, "x data (%d)\r\n", value);
+	print_msg(msg);
+	
+	spi_read(0x09, &value); //ydata
+	sprintf(msg, "y data (0x%x)\r\n", value);
+	print_msg(msg);
+	
+	spi_read(0x0A, &value); //zdata
+	sprintf(msg, "z data (0x%x)\r\n", value);
+	print_msg(msg);
+	
+	//deassert st
+	self_test=0x00;
+	spi_write(0x2E,&self_test);
+	
   while (1)
   {
 		//test commit

@@ -75,6 +75,24 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 void print_msg(char * msg) {
   HAL_UART_Transmit(&huart3, (uint8_t *)msg, strlen(msg), 100);
 }
+
+void testing_read(void){
+	print_msg("Test\n");
+	uint8_t value=1;
+	spi_read(0x00, &value);
+	char msg[100];
+	
+	if(value == 0xAD){
+		print_msg("seems ok\n");
+		sprintf(msg, "tis this (0x%x)\r\n", value);
+		print_msg(msg);
+	}
+	else{
+		sprintf(msg, "Wrong product id (0x%x)\r\n", value);
+		print_msg(msg);
+		//print_msg("No");
+	}
+}
 /* USER CODE END 0 */
 
 /**
@@ -118,21 +136,17 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	print_msg("Test\n");
-	uint8_t value=1;
-	spi_read(0x00, &value);
+	testing_read(); //tests that device reg of accelerometer can be read
+	int value=1;
 	char msg[100];
 	
-	if(value == 0xAD){
-		print_msg("seems ok\n");
-		sprintf(msg, "tis this (0x%x)\r\n", value);
-		print_msg(msg);
-	}
-	else{
-		sprintf(msg, "Wrong product id (0x%x)\r\n", value);
-		print_msg(msg);
-		//print_msg("No");
-	}
+	//configure?
+	uint8_t setting = 0xFA;
+	spi_write(0x23, &setting); //inactivity
+	setting = 0x83;
+	spi_write(0x2c, &setting); //general setting (filter ctl)
+	setting = 0x02;
+	spi_write(0x2D, &setting); //turn on measure
 	
 	//self test mode
 	print_msg("call self test\n");
@@ -145,21 +159,32 @@ int main(void)
 	print_msg(msg);
 	
 	spi_read(0x09, &value); //ydata
-	sprintf(msg, "y data (0x%x)\r\n", value);
+	sprintf(msg, "y data (%d)\r\n", value);
 	print_msg(msg);
 	
 	spi_read(0x0A, &value); //zdata
-	sprintf(msg, "z data (0x%x)\r\n", value);
+	sprintf(msg, "z data (%d)\r\n", value);
 	print_msg(msg);
 	
 	//deassert st
-	self_test=0x00;
-	spi_write(0x2E,&self_test);
+	//self_test=0x00;
+	//spi_write(0x2E,&self_test);
 	
   while (1)
   {
 		//test commit
-		
+		HAL_Delay(1000);
+		spi_read(0x08, &value); //xdata
+	sprintf(msg, "x data (%d)\r\n", value);
+	print_msg(msg);
+	
+	spi_read(0x09, &value); //ydata
+	sprintf(msg, "y data (%d)\r\n", value);
+	print_msg(msg);
+	
+	spi_read(0x0A, &value); //zdata
+	sprintf(msg, "z data (%d)\r\n", value);
+	print_msg(msg);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

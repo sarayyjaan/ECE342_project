@@ -66,6 +66,8 @@ void print_msg(char * msg);
 #define USER_Btn_GPIO_Port GPIOC
 #define MCO_Pin GPIO_PIN_0
 #define MCO_GPIO_Port GPIOH
+#define LED_display_Pin GPIO_PIN_3
+#define LED_display_GPIO_Port GPIOA
 #define CS_ACC_Pin GPIO_PIN_4
 #define CS_ACC_GPIO_Port GPIOA
 #define LD1_Pin GPIO_PIN_0

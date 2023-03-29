@@ -4,5 +4,5 @@
 #include <string.h>
 
 uint8_t adxl362_init(void){
-
+return 0;
 }

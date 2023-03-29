@@ -119,7 +119,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	print_msg("Test\n");
-	uint8_t value=0;
+	uint8_t value=1;
 	spi_read(0x00, &value);
 	char msg[100];
 	

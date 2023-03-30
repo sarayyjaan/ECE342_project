@@ -102,7 +102,8 @@ HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
 #define LD2_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-
+//defining registers' addresses
+#define SELF_TEST 0x2E
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

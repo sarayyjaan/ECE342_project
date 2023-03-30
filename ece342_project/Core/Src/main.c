@@ -18,7 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -66,6 +65,10 @@ static void MX_TIM1_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
+void adxl362_init(void); 
+void adxl362_start(void);
+void adxl362_read_y(int16_t *pData);
+uint16_t convert2stoBinary(uint16_t inp);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -102,7 +105,7 @@ void testing_read(void){
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	int16_t val;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -148,20 +151,21 @@ int main(void)
 	setting = 0x02;
 	spi_write(0x22, &setting); //time act
 	setting = 0xFA;
+	setting = 0xFA;
 	spi_write(0x23, &setting); //inactivity
 	setting = 0x02;
 	spi_write(0x25, &setting); //inactivity time
 	setting = 0x03;
 	spi_write(0x27, &setting); //act/inactivity control reg
-	setting = 0x83;
+	/*setting = 0x83;
 	spi_write(0x2c, &setting); //general setting (filter ctl)
 	setting = 0x02;
-	spi_write(0x2D, &setting); //turn on measure
-	
+	spi_write(0x2D, &setting); //turn on measure*/
+	adxl362_init();
 	//self test mode
 	print_msg("call self test\n");
 	uint8_t self_test=0x01;
-	spi_write(0x2E,&self_test);
+	spi_write(SELF_TEST,&self_test);
 	print_msg("reading x\n");
 	
 	spi_read(0x08, &value); //xdata
@@ -180,6 +184,9 @@ int main(void)
 	self_test=0x00;
 	spi_write(0x2E,&self_test);
 	int data;
+	//self_test=0x00;
+	//spi_write(SELF_TEST,&self_test);
+	
   while (1)
   {
 		//test commit
@@ -201,7 +208,9 @@ int main(void)
 		}
 	sprintf(msg, "y data (%d)(0x%x)\r\n", (int) data, data);
 	print_msg(msg);
-	
+	//adxl362_read_y(&val);
+	//sprintf(msg, "y data (%d)\r\n", val);
+	//print_msg(msg);
 	spi_read(0x0A, &value); //zdata
 	sprintf(msg, "z data (%d)\r\n", (int) value);
 	print_msg(msg);

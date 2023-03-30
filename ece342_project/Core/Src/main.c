@@ -18,7 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "adxl362.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -66,6 +65,10 @@ static void MX_TIM1_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
+void adxl362_init(void); 
+void adxl362_start(void);
+void adxl362_read_y(int16_t *pData);
+uint16_t convert2stoBinary(uint16_t inp);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -102,7 +105,7 @@ void testing_read(void){
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	int16_t val;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -181,7 +184,9 @@ int main(void)
 	spi_read(0x09, &value); //ydata
 	sprintf(msg, "y data (%d)\r\n", value);
 	print_msg(msg);
-	
+	//adxl362_read_y(&val);
+	//sprintf(msg, "y data (%d)\r\n", val);
+	//print_msg(msg);
 	spi_read(0x0A, &value); //zdata
 	sprintf(msg, "z data (%d)\r\n", value);
 	print_msg(msg);

@@ -45,5 +45,6 @@
  #define ADXL362_REG_POWER_CTL           0x2D
  #define ADXL362_REG_SELF_TEST           0x2E
  
+ void adxl362_init(void); 
  
  #endif

@@ -18,7 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include "adxl362.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -141,17 +141,17 @@ int main(void)
 	char msg[100];
 	
 	//configure?
-	uint8_t setting = 0xFA;
+	/*uint8_t setting = 0xFA;
 	spi_write(0x23, &setting); //inactivity
 	setting = 0x83;
 	spi_write(0x2c, &setting); //general setting (filter ctl)
 	setting = 0x02;
-	spi_write(0x2D, &setting); //turn on measure
-	
+	spi_write(0x2D, &setting); //turn on measure*/
+	adxl362_init();
 	//self test mode
 	print_msg("call self test\n");
 	uint8_t self_test=0x01;
-	spi_write(0x2E,&self_test);
+	spi_write(SELF_TEST,&self_test);
 	print_msg("reading x\n");
 	
 	spi_read(0x08, &value); //xdata
@@ -168,7 +168,7 @@ int main(void)
 	
 	//deassert st
 	//self_test=0x00;
-	//spi_write(0x2E,&self_test);
+	//spi_write(SELF_TEST,&self_test);
 	
   while (1)
   {

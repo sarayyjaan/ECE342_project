@@ -101,7 +101,8 @@ void testing_read(void);
 #define LD2_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-
+//defining registers' addresses
+#define SELF_TEST 0x2E
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

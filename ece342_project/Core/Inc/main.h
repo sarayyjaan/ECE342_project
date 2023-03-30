@@ -60,6 +60,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN EFP */
 void print_msg(char * msg);
 void testing_read(void);
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

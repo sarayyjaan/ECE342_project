@@ -137,12 +137,22 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	testing_read(); //tests that device reg of accelerometer can be read
-	int value=1;
+	uint8_t value=1;
 	char msg[100];
 	
 	//configure?
-	uint8_t setting = 0xFA;
+	uint8_t setting = 0x05;
+	spi_write(0x20, &setting); //threshold active L
+	setting = 0x00;
+	spi_write(0x21, &setting); //threshold active H	
+	setting = 0x02;
+	spi_write(0x22, &setting); //time act
+	setting = 0xFA;
 	spi_write(0x23, &setting); //inactivity
+	setting = 0x02;
+	spi_write(0x25, &setting); //inactivity time
+	setting = 0x03;
+	spi_write(0x27, &setting); //act/inactivity control reg
 	setting = 0x83;
 	spi_write(0x2c, &setting); //general setting (filter ctl)
 	setting = 0x02;
@@ -155,35 +165,45 @@ int main(void)
 	print_msg("reading x\n");
 	
 	spi_read(0x08, &value); //xdata
-	sprintf(msg, "x data (%d)\r\n", value);
+	sprintf(msg, "x data (%d)(0x%x)\r\n", (int) value, value);
 	print_msg(msg);
 	
 	spi_read(0x09, &value); //ydata
-	sprintf(msg, "y data (%d)\r\n", value);
+	sprintf(msg, "y data (%d)\r\n", (int) value);
 	print_msg(msg);
 	
 	spi_read(0x0A, &value); //zdata
-	sprintf(msg, "z data (%d)\r\n", value);
+	sprintf(msg, "z data (%d)\r\n", (int) value);
 	print_msg(msg);
 	
 	//deassert st
-	//self_test=0x00;
-	//spi_write(0x2E,&self_test);
-	
+	self_test=0x00;
+	spi_write(0x2E,&self_test);
+	int data;
   while (1)
   {
 		//test commit
 		HAL_Delay(1000);
-		spi_read(0x08, &value); //xdata
-	sprintf(msg, "x data (%d)\r\n", value);
+		spi_read_new(0x0E, &data, 2); //xdata
+		sprintf(msg, "x data (%d)(0x%x)\r\n", (int) data, data);
+	print_msg(msg);
+		data = data>>4;
+		data=(data*1000)/(2000/8);
+		sprintf(msg, "processing x data (%d)\r\n", data);
 	print_msg(msg);
 	
-	spi_read(0x09, &value); //ydata
-	sprintf(msg, "y data (%d)\r\n", value);
+	spi_read_new(0x10, &data, 2); //ydata
+		if(data>=0x8000){
+			data = data ^ 0x07ff;
+			data=data-1;
+			data = data & 0x07ff;
+			data = 0- data;
+		}
+	sprintf(msg, "y data (%d)(0x%x)\r\n", (int) data, data);
 	print_msg(msg);
 	
 	spi_read(0x0A, &value); //zdata
-	sprintf(msg, "z data (%d)\r\n", value);
+	sprintf(msg, "z data (%d)\r\n", (int) value);
 	print_msg(msg);
     /* USER CODE END WHILE */
 

@@ -35,6 +35,8 @@ extern "C" {
 #include "adxl362.h"
 #include "spi.h"
 #include <stdio.h>
+#include "fonts.h"
+#include "ssd1306.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -64,6 +66,7 @@ HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
 HAL_StatusTypeDef oled_write(uint8_t *cmd, uint8_t len);
 void oled_init();
 void oled_clear_screen();
+void drawline(uint8_t c1, uint8_t r1, uint8_t c2, uint8_t r2);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

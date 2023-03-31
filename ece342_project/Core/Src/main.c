@@ -245,6 +245,15 @@ int main(void)
 	SSD1306_Fill(0xff);
 	SSD1306_Fill(0x00);
 	uint8_t data=0;
+	
+	oled_init();
+	drawline(0x0,0x0, 0x5F, 0x3F);
+	/*HAL_Delay(500);
+	oled_clear_screen();
+	FontDef_t font = Font_7x10;
+	SSD1306_COLOR_t white = SSD1306_COLOR_WHITE;
+	SSD1306_Putc('a', &font, white);*/
+	
   while (1)
   {
 		//calibrating to get avg values

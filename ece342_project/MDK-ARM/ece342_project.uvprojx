@@ -390,16 +390,6 @@
               <FileType>2</FileType>
               <FilePath>startup_stm32f446xx.s</FilePath>
             </File>
-            <File>
-              <FileName>fonts.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\Desktop\fonts.h</FilePath>
-            </File>
-            <File>
-              <FileName>ssd1306.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\Desktop\ssd1306.h</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -433,12 +423,22 @@
             <File>
               <FileName>fonts.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\Desktop\fonts.c</FilePath>
+              <FilePath>..\Core\Src\fonts.c</FilePath>
             </File>
             <File>
               <FileName>ssd1306.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\Desktop\ssd1306.c</FilePath>
+              <FilePath>..\Core\Src\ssd1306.c</FilePath>
+            </File>
+            <File>
+              <FileName>fonts.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Core\Inc\fonts.h</FilePath>
+            </File>
+            <File>
+              <FileName>ssd1306.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Core\Inc\ssd1306.h</FilePath>
             </File>
           </Files>
         </Group>

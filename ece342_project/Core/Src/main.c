@@ -248,6 +248,10 @@ int main(void)
 	
 	oled_init();
 	drawline(0x0,0x0, 0x5F, 0x3F);
+	cleardisplay();
+	drawpixel(0x2, 0x2, 0x3E);
+	drawpixel(0x3, 0x3, 0x3E);
+	drawpixel(0x4, 0x4, 0x3E);
 	/*HAL_Delay(500);
 	oled_clear_screen();
 	FontDef_t font = Font_7x10;
@@ -282,7 +286,7 @@ int main(void)
 		{
 			spi_read_new(0x0E, &data, 2); //xdata
 			data = swap_bytes(data);
-			x_accl[i] = return_value(data);
+			//x_acPmod OLEDrgb cl[i] = return_value(data);
 			data = swap_bytes(data);
 			spi_read_new(0x10, &data, 2); //ydata
 			y_accl[i] = return_value(data);

@@ -124,6 +124,9 @@ void drawline(uint8_t c1, uint8_t r1, uint8_t c2, uint8_t r2);
 
 #define CMD_DRAWLINE                       0x21
 #define CMD_DRAWRECTANGLE                  0x22
+#define CMD_SETCOLUMNADDRESS               0x15
+#define CMD_SETROWADDRESS                  0x75
+
 #define CMD_COPYWINDOW                     0x23
 #define CMD_DIMWINDOW                      0x24
 #define CMD_CLEARWINDOW                    0x25

@@ -246,11 +246,34 @@ void oled_clear_screen(){
 	oled_write(cmds,5);
 }
 
+
+void drawpixel(uint8_t c, uint8_t r, uint16_t pixelColor)
+{
+	uint8_t data[2];
+	uint8_t cmds[9];
+	//set column start and end
+	cmds[0] = CMD_SETCOLUMNADDRESS; 		
+	cmds[1] = c;					// Set the starting column coordinates
+	cmds[2] = OLEDRGB_WIDTH - 1;					// Set the finishing column coordinates
+
+	//set row start and end
+	cmds[3] = CMD_SETROWADDRESS; 		
+	cmds[4] = r;					// Set the starting row coordinates
+	cmds[5] = OLEDRGB_HEIGHT - 1;					// Set the finishing row coordinates
+
+	cmds[6] = 0xFF;
+	cmds[7] = 0xFF;
+	//cmds[8] = 0xFF;
+	oled_write(cmds,8);
+	//oled_write(data,2);
+	HAL_Delay(50);
+	
+}
 void drawline(uint8_t c1, uint8_t r1, uint8_t c2, uint8_t r2)
 {
 	uint8_t cmds[8];
 	
-	cmds[0] = CMD_DRAWLINE; 		//draw line
+	cmds[0] = CMD_DRAWLINE; 	//draw line
 	cmds[1] = c1;					// start column
 	cmds[2] = r1;					// start row
 	cmds[3] = c2;					// end column
@@ -262,4 +285,16 @@ void drawline(uint8_t c1, uint8_t r1, uint8_t c2, uint8_t r2)
 	oled_write(cmds,8);
 	HAL_Delay(50);
 	
+}
+
+void cleardisplay()
+{
+	uint8_t cmds[5];
+	cmds[0] = CMD_CLEARWINDOW; 		// Enter the “clear mode”
+	cmds[1] = 0x00;					// Set the starting column coordinates
+	cmds[2] = 0x00;					// Set the starting row coordinates
+	cmds[3] = OLEDRGB_WIDTH - 1;	// Set the finishing column coordinates;
+	cmds[4] = OLEDRGB_HEIGHT - 1;	// Set the finishing row coordinates;
+	oled_write(cmds,5);
+	HAL_Delay(50);
 }

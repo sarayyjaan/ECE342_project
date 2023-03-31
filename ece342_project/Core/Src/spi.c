@@ -121,6 +121,7 @@ void oled_init(){
 	uint8_t cmd = CMD_DISPLAYOFF;
 	oled_write(&cmd, 1);
 	uint8_t cmds[2];
+	
 	cmds[0] = CMD_SETREMAP;
 	cmds[1] = 0x72;
 	oled_write(cmds, 2);

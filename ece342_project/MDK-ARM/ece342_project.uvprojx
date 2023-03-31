@@ -406,21 +406,6 @@
               <FilePath>..\Core\Src\spi.c</FilePath>
             </File>
             <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Core/Src/main.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f4xx_it.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Core/Src/stm32f4xx_it.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f4xx_hal_msp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Core/Src/stm32f4xx_hal_msp.c</FilePath>
-            </File>
-            <File>
               <FileName>fonts.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\Src\fonts.c</FilePath>
@@ -439,6 +424,21 @@
               <FileName>ssd1306.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Core\Inc\ssd1306.h</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Core/Src/main.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Core/Src/stm32f4xx_it.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_hal_msp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Core/Src/stm32f4xx_hal_msp.c</FilePath>
             </File>
           </Files>
         </Group>

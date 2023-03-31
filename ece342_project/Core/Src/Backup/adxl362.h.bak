@@ -1,8 +1,11 @@
 #ifndef __ADXL362_H__
 #define __ADXL362_H__
-
 #include <stdint.h>
-
+#include "main.h"
+void adxl362_init(void); 
+void adxl362_start(void);
+void adxl362_read_y(int16_t *pData);
+uint16_t convert2stoBinary(uint16_t inp);
 
  /* ADXL362 communication commands */
  #define ADXL362_WRITE_REG               0x0A
@@ -44,6 +47,5 @@
  #define ADXL362_REG_FILTER_CTL          0x2C
  #define ADXL362_REG_POWER_CTL           0x2D
  #define ADXL362_REG_SELF_TEST           0x2E
- 
  
  #endif

@@ -118,9 +118,35 @@ HAL_StatusTypeDef oled_write(uint8_t *cmd, uint8_t len){
 }
 
 void oled_init(){
+	
+	//bring d/c low
+	HAL_GPIO_WritePin(D_C_GPIO_Port, D_C_Pin, 0);
+	
+	//reset high
+	HAL_GPIO_WritePin(OLED_RESET_GPIO_Port , OLED_RESET_Pin, 1);
+	
+	//vccen low
+	HAL_GPIO_WritePin(VCCEN_GPIO_Port , VCCEN_Pin, 0);
+	
+	//pmoden high, wait
+	HAL_GPIO_WritePin(PMOD_EN_GPIO_Port, PMOD_EN_Pin, 1);
+	HAL_Delay(50);
+	
+	//res low, wait, high
+	HAL_GPIO_WritePin(OLED_RESET_GPIO_Port , OLED_RESET_Pin, 0);
+	HAL_Delay(10);
+	HAL_GPIO_WritePin(OLED_RESET_GPIO_Port , OLED_RESET_Pin, 1);
+	HAL_Delay(10);
+	
+	uint8_t cmds[2];
+	
+	//0xFD, 0x12
+	cmds[0] = 0xFD;
+	cmds[1] = 0x12;
+	oled_write(cmds, 2);
+	
 	uint8_t cmd = CMD_DISPLAYOFF;
 	oled_write(&cmd, 1);
-	uint8_t cmds[2];
 	
 	cmds[0] = CMD_SETREMAP;
 	cmds[1] = 0x72;
@@ -197,12 +223,25 @@ void oled_init(){
 	oled_write(&cmd, 1);
 	
 	//clear screen
-	//Clear();
+	oled_clear_screen();
 	
 	//write 1 to VCCEN
+	HAL_GPIO_WritePin(VCCEN_GPIO_Port , VCCEN_Pin, 1);
 	
 	HAL_Delay(100);
 	cmd = CMD_DISPLAYON;
 	oled_write(&cmd, 1);
 	HAL_Delay(300);
+}
+
+void oled_clear_screen(){
+	uint8_t cmds[5];
+	
+	cmds[0] = CMD_CLEARWINDOW;
+	cmds[1] = 0x00;
+	cmds[2] = 0x00;
+	cmds[3] = 0x5F;
+	cmds[4] = 0x3F;
+	
+	oled_write(cmds,5);
 }

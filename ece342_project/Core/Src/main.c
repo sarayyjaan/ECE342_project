@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <math.h>
@@ -65,10 +66,6 @@ static void MX_TIM1_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
-void adxl362_init(void); 
-void adxl362_start(void);
-void adxl362_read_y(int16_t *pData);
-uint16_t convert2stoBinary(uint16_t inp);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -231,7 +228,7 @@ int main(void)
 	//self_test=0x00;
 	//spi_write(SELF_TEST,&self_test);
 	//int x_avg, y_avg, z_avg;
-	int data;
+	uint8_t data=0;
   while (1)
   {
 		//calibrating to get avg values
@@ -649,7 +646,8 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, LED_display_Pin|CS_ACC_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LD1_Pin|LD3_Pin|LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, LD1_Pin|PMOD_EN_Pin|LD3_Pin|OLED_RESET_Pin
+                          |LD2_Pin|VCCEN_Pin|D_C_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(USB_PowerSwitchOn_GPIO_Port, USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
@@ -667,8 +665,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LD1_Pin LD3_Pin LD2_Pin */
-  GPIO_InitStruct.Pin = LD1_Pin|LD3_Pin|LD2_Pin;
+  /*Configure GPIO pins : LD1_Pin PMOD_EN_Pin LD3_Pin OLED_RESET_Pin
+                           LD2_Pin VCCEN_Pin D_C_Pin */
+  GPIO_InitStruct.Pin = LD1_Pin|PMOD_EN_Pin|LD3_Pin|OLED_RESET_Pin
+                          |LD2_Pin|VCCEN_Pin|D_C_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

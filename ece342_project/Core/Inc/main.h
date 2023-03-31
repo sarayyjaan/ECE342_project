@@ -63,6 +63,7 @@ void testing_read(void);
 HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
 HAL_StatusTypeDef oled_write(uint8_t *cmd, uint8_t len);
 void oled_init();
+void oled_clear_screen();
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -76,8 +77,12 @@ void oled_init();
 #define CS_ACC_GPIO_Port GPIOA
 #define LD1_Pin GPIO_PIN_0
 #define LD1_GPIO_Port GPIOB
+#define PMOD_EN_Pin GPIO_PIN_13
+#define PMOD_EN_GPIO_Port GPIOB
 #define LD3_Pin GPIO_PIN_14
 #define LD3_GPIO_Port GPIOB
+#define OLED_RESET_Pin GPIO_PIN_15
+#define OLED_RESET_GPIO_Port GPIOB
 #define STLK_RX_Pin GPIO_PIN_8
 #define STLK_RX_GPIO_Port GPIOD
 #define STLK_TX_Pin GPIO_PIN_9
@@ -102,6 +107,10 @@ void oled_init();
 #define TCK_GPIO_Port GPIOA
 #define LD2_Pin GPIO_PIN_7
 #define LD2_GPIO_Port GPIOB
+#define VCCEN_Pin GPIO_PIN_8
+#define VCCEN_GPIO_Port GPIOB
+#define D_C_Pin GPIO_PIN_9
+#define D_C_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 //defining registers' addresses
@@ -109,6 +118,15 @@ void oled_init();
 
 #define OLEDRGB_WIDTH 96
 #define OLEDRGB_HEIGHT 64
+
+#define CMD_DRAWLINE                       0x21
+#define CMD_DRAWRECTANGLE                  0x22
+#define CMD_COPYWINDOW                     0x23
+#define CMD_DIMWINDOW                      0x24
+#define CMD_CLEARWINDOW                    0x25
+#define CMD_FILLWINDOW                     0x26
+    #define DISABLE_FILL    0x00
+    #define ENABLE_FILL     0x01
 
 #define CMD_CONTINUOUSSCROLLINGSETUP      0x27
 #define CMD_DEACTIVESCROLLING              0x2E

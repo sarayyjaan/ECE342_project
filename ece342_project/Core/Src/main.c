@@ -269,7 +269,7 @@ int main(void)
 			+ ((z_buff[i] - z_avg) * (z_buff[i] - z_avg))); //should not be moving in the z direction
 			
 			totave[i] = (totvect[i] + totvect[i - 1]) / 2 ;
-		sprintf(msg, "totave: %d\n",(int)totave);
+		sprintf(msg, "totave: %d\n",(int)totave[i]);
 		print_msg(msg);
 			
     HAL_Delay(100);
@@ -289,7 +289,7 @@ int main(void)
 	}
 		sprintf(msg, "step_count: %d\n",(int)step_count);
 		print_msg(msg);
-		if( 0 == 1){
+		//if( 0 == 1){
 		spi_read_new(0x0E, &data, 2); //xdata
 		data = return_value(data);
 		sprintf(msg, "\nx data (%d)(0x%x)\r\n", (int) data, data);
@@ -311,7 +311,7 @@ int main(void)
 	data = return_value(data);
 	sprintf(msg, "z data (%d)\r\n", (int) data);
 	print_msg(msg);
-	}
+	//}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

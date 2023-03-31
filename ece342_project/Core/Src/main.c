@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <math.h>
+#include "ssd1306.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -67,7 +68,7 @@ static void MX_TIM6_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 /* USER CODE BEGIN PFP */
-
+unsigned short swap_bytes(unsigned short x);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -100,7 +101,7 @@ int z_buff[20];
 int x_accl[20], y_accl[20], z_accl[20];
 int totave[20], totvect[20];
 int step_count = 0;
-int threshhold = 20;
+int threshhold = 100;
 int flag = 0;
 uint16_t return_value(uint16_t inp){
 	if(inp>=0x8000){
@@ -118,23 +119,35 @@ void calibrate(){
 	int data = 0;
 	for (int i = 0;i<20;i++){
 			spi_read_new(0x0E, &data, 2); //xdata
+			data = swap_bytes(data);
 			x_buff[i] = return_value(data);
 			x_avg = x_buff[i] + x_avg;
 	}
 	x_avg = x_avg / 20;
 	for (int i = 0;i<20;i++){
 			spi_read_new(0x10, &data, 2); //xdata
+			data = swap_bytes(data);
 			y_buff[i] = return_value(data);
 			y_avg = y_buff[i] + y_avg;
 	}
 	y_avg = y_avg / 20;
 	for (int i = 0;i<20;i++){
 			spi_read_new(0x12, &data, 2); //xdata
+			data = swap_bytes(data);
 			z_buff[i] = return_value(data);
 			z_avg = z_buff[i] + z_avg;
 			HAL_Delay(100);
 		}
 	z_avg = z_avg / 20;
+}
+
+unsigned short swap_bytes(unsigned short x) {
+  unsigned short bitmask = 0x00FF;
+  unsigned short temp = x & bitmask;
+  x = x >> 8;
+  temp = temp << 8;
+  x = x | temp;
+  return x;
 }
 /* USER CODE END 0 */
 
@@ -228,6 +241,9 @@ int main(void)
 	//self_test=0x00;
 	//spi_write(SELF_TEST,&self_test);
 	//int x_avg, y_avg, z_avg;
+	oled_init();
+	SSD1306_Fill(0xff);
+	SSD1306_Fill(0x00);
 	uint8_t data=0;
   while (1)
   {
@@ -256,10 +272,13 @@ int main(void)
 		for (int i = 0; i < 20; i++)
 		{
 			spi_read_new(0x0E, &data, 2); //xdata
+			data = swap_bytes(data);
 			x_accl[i] = return_value(data);
+			data = swap_bytes(data);
 			spi_read_new(0x10, &data, 2); //ydata
 			y_accl[i] = return_value(data);
 			spi_read_new(0x12, &data, 2); //zdata
+			data = swap_bytes(data);
 			z_accl[i] = return_value(data);
 			totvect[i] = sqrt(((x_accl[i] - x_avg)*(x_accl[i] - x_avg)) 
 			+ ((y_accl[i] - y_avg) * (y_accl[i] - y_avg)) 

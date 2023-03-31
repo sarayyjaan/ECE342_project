@@ -5,7 +5,7 @@
 <h2>Tool Versions:</h2>
 IDE-Version: µVision V5.38.0.0
 Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: Sara Ahmad, University of Toronto, LIC=----
+License Information: Fiona Kuang, UofT, LIC=----
  
 Tool Versions:
 Toolchain:       MDK-Lite  Version: 5.38.0.0
@@ -21,12 +21,13 @@ Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.1.0.0
 Dialog DLL:      TCM.DLL V1.56.4.0
  
 <h2>Project:</h2>
-C:\Users\Admin\Git\ECE342_project\ece342_project\MDK-ARM\ece342_project.uvprojx
+C:\Users\kuang\Documents\ECE342\project\ECE342_project\ece342_project\MDK-ARM\ece342_project.uvprojx
 Project File Date:  03/30/2023
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.19', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'ece342_project'
+<<<<<<< HEAD
 ../Core/Src/main.c(130): warning: incompatible pointer types passing 'int *' to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
                         spi_read_new(0x0E, &data, 2); //xdata
                                            ^~~~~
@@ -87,6 +88,13 @@ linking...
 Program Size: Code=19040 RO-data=876 RW-data=16 ZI-data=4072  
 FromELF: creating hex file...
 "ece342_project\ece342_project.axf" - 0 Error(s), 9 Warning(s).
+=======
+compiling spi.c...
+linking...
+Program Size: Code=17688 RO-data=908 RW-data=12 ZI-data=3412  
+FromELF: creating hex file...
+"ece342_project\ece342_project.axf" - 0 Error(s), 0 Warning(s).
+>>>>>>> d677498cd16d5e743241f093618d0784b094dcd3
 
 <h2>Software Packages used:</h2>
 
@@ -97,20 +105,24 @@ Package Vendor: ARM
    * Component: CORE Version: 5.6.0
 
 Package Vendor: Keil
-                https://www.keil.com/pack/Keil.STM32F4xx_DFP.2.17.0.pack
-                Keil.STM32F4xx_DFP.2.17.0
+                http://www.keil.com/pack/Keil.STM32F4xx_DFP.2.16.0.pack
+                Keil.STM32F4xx_DFP.2.16.0
                 STMicroelectronics STM32F4 Series Device Support, Drivers and Examples
 
 <h2>Collection of Component include folders:</h2>
   ./RTE/_ece342_project
-  C:/Users/Admin/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include
-  C:/Users/Admin/AppData/Local/Arm/Packs/Keil/STM32F4xx_DFP/2.17.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include
+  C:/Users/kuang/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include
+  C:/Users/kuang/AppData/Local/Arm/Packs/Keil/STM32F4xx_DFP/2.16.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include
 
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.6.0
       Include file:  CMSIS/Core/Include/tz_context.h
+<<<<<<< HEAD
 Build Time Elapsed:  00:00:01
+=======
+Build Time Elapsed:  00:00:02
+>>>>>>> d677498cd16d5e743241f093618d0784b094dcd3
 </pre>
 </body>
 </html>

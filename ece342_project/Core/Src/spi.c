@@ -245,3 +245,21 @@ void oled_clear_screen(){
 	
 	oled_write(cmds,5);
 }
+
+void drawline(uint8_t c1, uint8_t r1, uint8_t c2, uint8_t r2)
+{
+	uint8_t cmds[8];
+	
+	cmds[0] = CMD_DRAWLINE; 		//draw line
+	cmds[1] = c1;					// start column
+	cmds[2] = r1;					// start row
+	cmds[3] = c2;					// end column
+	cmds[4] = r2;					//end row
+	cmds[5] = 0x3E;	//R					
+	cmds[6] = 0x3F;	//G
+	cmds[7] = 0x3E;	//b
+	
+	oled_write(cmds,8);
+	HAL_Delay(50);
+	
+}

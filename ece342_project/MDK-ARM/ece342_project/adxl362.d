@@ -39,4 +39,6 @@ ece342_project/adxl362.o: ..\Core\Src\adxl362.c ..\Core\Src\adxl362.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pcd_ex.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h ..\Core\Inc\adxl362.h \
   ..\Core\Inc\spi.h C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h \
-  ..\Core\Src\spi.h
+  ..\Core\Inc\fonts.h ..\Core\Inc\ssd1306.h \
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h ..\Core\Src\spi.h

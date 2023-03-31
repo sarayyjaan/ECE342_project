@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include <math.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -102,6 +103,49 @@ void testing_read(void){
   * @brief  The application entry point.
   * @retval int
   */
+
+int x_buff[20];
+int y_buff[20];
+int z_buff[20];
+int x_accl[20], y_accl[20], z_accl[20];
+int totave[20], totvect[20];
+int step_count = 0;
+int threshhold = 20;
+int flag = 0;
+uint16_t return_value(uint16_t inp){
+	if(inp>=0x8000){
+			inp = inp ^ 0x07ff; //get's the 2s complement
+			inp= inp-1; //adds 1
+			inp = inp & 0x07ff; //removes 1st 4 sign extended bits
+			inp = 0 - inp;
+		}else{
+			inp = inp & 0x07ff;
+		}
+	return inp;
+};
+int x_avg, y_avg, z_avg;
+void calibrate(){
+	int data = 0;
+	for (int i = 0;i<20;i++){
+			spi_read_new(0x0E, &data, 2); //xdata
+			x_buff[i] = return_value(data);
+			x_avg = x_buff[i] + x_avg;
+	}
+	x_avg = x_avg / 20;
+	for (int i = 0;i<20;i++){
+			spi_read_new(0x10, &data, 2); //xdata
+			y_buff[i] = return_value(data);
+			y_avg = y_buff[i] + y_avg;
+	}
+	y_avg = y_avg / 20;
+	for (int i = 0;i<20;i++){
+			spi_read_new(0x12, &data, 2); //xdata
+			z_buff[i] = return_value(data);
+			z_avg = z_buff[i] + z_avg;
+			HAL_Delay(100);
+		}
+	z_avg = z_avg / 20;
+}
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -157,11 +201,11 @@ int main(void)
 	spi_write(0x25, &setting); //inactivity time
 	setting = 0x03;
 	spi_write(0x27, &setting); //act/inactivity control reg
-	/*setting = 0x83;
+	setting = 0x83;
 	spi_write(0x2c, &setting); //general setting (filter ctl)
 	setting = 0x02;
 	spi_write(0x2D, &setting); //turn on measure*/
-	adxl362_init();
+	//adxl362_init();
 	//self test mode
 	print_msg("call self test\n");
 	uint8_t self_test=0x01;
@@ -183,37 +227,92 @@ int main(void)
 	//deassert st
 	self_test=0x00;
 	spi_write(0x2E,&self_test);
-	int data;
+	//int x_data = 0, y_data = 0 , z_data = 0;
+	//int val;
 	//self_test=0x00;
 	//spi_write(SELF_TEST,&self_test);
-	
+	//int x_avg, y_avg, z_avg;
+	int data;
   while (1)
   {
-		//test commit
+		//calibrating to get avg values
+		calibrate();
+		/*for (int i = 0;i<20;i++){
+			spi_read_new(0x0E, &x_data, 2); //xdata
+			x_buff[i] = return_value(x_data);
+			x_avg = x_buff[i] + x_avg;
+			spi_read_new(0x10, &y_data, 2); //xdata
+			y_buff[i] = return_value(y_data);
+			y_avg = y_buff[i] + y_avg;
+			spi_read_new(0x12, &z_data, 2); //xdata
+			z_buff[i] = return_value(z_data);
+			z_avg = z_buff[i] + z_avg;
+			HAL_Delay(100);
+		}
+		x_avg = x_avg/20;
+		y_avg = y_avg/20;
+		z_avg = z_avg/20;
+		*/
+		sprintf(msg, "avg x: %d, y: %d, z:%d\n",(int)x_avg, y_avg, z_avg);
+		print_msg(msg);
 		HAL_Delay(1000);
+		
+		for (int i = 0; i < 20; i++)
+		{
+			spi_read_new(0x0E, &data, 2); //xdata
+			x_accl[i] = return_value(data);
+			spi_read_new(0x10, &data, 2); //ydata
+			y_accl[i] = return_value(data);
+			spi_read_new(0x12, &data, 2); //zdata
+			z_accl[i] = return_value(data);
+			totvect[i] = sqrt(((x_accl[i] - x_avg)*(x_accl[i] - x_avg)) 
+			+ ((y_accl[i] - y_avg) * (y_accl[i] - y_avg)) 
+			+ ((z_buff[i] - z_avg) * (z_buff[i] - z_avg))); //should not be moving in the z direction
+			
+			totave[i] = (totvect[i] + totvect[i - 1]) / 2 ;
+		sprintf(msg, "totave: %d\n",(int)totave);
+		print_msg(msg);
+			
+    HAL_Delay(100);
+    if(totave[i]>threshhold && flag==0)
+    {
+       step_count=step_count+1;
+       flag=1;
+    }
+    else if (totave[i] > threshhold && flag==1)
+    {
+        //do nothing; already considered this count
+    }
+    if (totave[i] <threshhold  && flag==1)
+    {
+      flag=0; //deassert
+    }
+	}
+		sprintf(msg, "step_count: %d\n",(int)step_count);
+		print_msg(msg);
+		if( 0 == 1){
 		spi_read_new(0x0E, &data, 2); //xdata
-		sprintf(msg, "x data (%d)(0x%x)\r\n", (int) data, data);
-	print_msg(msg);
-		data = data>>4;
-		data=(data*1000)/(2000/8);
-		sprintf(msg, "processing x data (%d)\r\n", data);
-	print_msg(msg);
+		data = return_value(data);
+		sprintf(msg, "\nx data (%d)(0x%x)\r\n", (int) data, data);
+		print_msg(msg);
+		//x_data = x_data>>4;
+		/*x_data=(x_data*1000)/(2000/8);
+		sprintf(msg, "processing x data (%d)\r\n", x_data);
+		print_msg(msg);*/
 	
 	spi_read_new(0x10, &data, 2); //ydata
-		if(data>=0x8000){
-			data = data ^ 0x07ff;
-			data=data-1;
-			data = data & 0x07ff;
-			data = 0- data;
-		}
+	data = return_value(data);
 	sprintf(msg, "y data (%d)(0x%x)\r\n", (int) data, data);
 	print_msg(msg);
+	
 	//adxl362_read_y(&val);
 	//sprintf(msg, "y data (%d)\r\n", val);
 	//print_msg(msg);
-	spi_read(0x0A, &value); //zdata
-	sprintf(msg, "z data (%d)\r\n", (int) value);
+	spi_read_new(0x12, &data, 2); //zdata
+	data = return_value(data);
+	sprintf(msg, "z data (%d)\r\n", (int) data);
 	print_msg(msg);
+	}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

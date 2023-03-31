@@ -28,20 +28,66 @@ Project File Date:  03/31/2023
 *** Using Compiler 'V6.19', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'ece342_project'
 compiling fonts.c...
-../Core/Src/ssd1306.c(650): warning: passing an object that undergoes default argument promotion to 'va_start' has undefined behavior [-Wvarargs]
-        va_start(args, n_frames);
-                       ^
-../Core/Src/ssd1306.c(647): note: parameter of type 'uint8_t' (aka 'unsigned char') is declared here
-void SSD1306_ShowGif(uint8_t n_frames, ...)
-                             ^
-1 warning generated.
-compiling ssd1306.c...
+../Core/Src/main.c(123): warning: incompatible pointer types passing 'int *' to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+                        spi_read_new(0x0E, &data, 2); //xdata
+                                           ^~~~~
+../Core/Inc/main.h(63): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+                                                         ^
+../Core/Src/main.c(129): warning: incompatible pointer types passing 'int *' to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+                        spi_read_new(0x10, &data, 2); //xdata
+                                           ^~~~~
+../Core/Inc/main.h(63): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+                                                         ^
+../Core/Src/main.c(135): warning: incompatible pointer types passing 'int *' to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+                        spi_read_new(0x12, &data, 2); //xdata
+                                           ^~~~~
+../Core/Inc/main.h(63): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+                                                         ^
+../Core/Src/main.c(261): warning: incompatible pointer types passing 'int *' to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+                        spi_read_new(0x0E, &data, 2); //xdata
+                                           ^~~~~
+../Core/Inc/main.h(63): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+                                                         ^
+../Core/Src/main.c(263): warning: incompatible pointer types passing 'int *' to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+                        spi_read_new(0x10, &data, 2); //ydata
+                                           ^~~~~
+../Core/Inc/main.h(63): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+                                                         ^
+../Core/Src/main.c(265): warning: incompatible pointer types passing 'int *' to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+                        spi_read_new(0x12, &data, 2); //zdata
+                                           ^~~~~
+../Core/Inc/main.h(63): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+                                                         ^
+../Core/Src/main.c(293): warning: incompatible pointer types passing 'int *' to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+                spi_read_new(0x0E, &data, 2); //xdata
+                                   ^~~~~
+../Core/Inc/main.h(63): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+                                                         ^
+../Core/Src/main.c(302): warning: incompatible pointer types passing 'int *' to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+        spi_read_new(0x10, &data, 2); //ydata
+                           ^~~~~
+../Core/Inc/main.h(63): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+                                                         ^
+../Core/Src/main.c(310): warning: incompatible pointer types passing 'int *' to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+        spi_read_new(0x12, &data, 2); //zdata
+                           ^~~~~
+../Core/Inc/main.h(63): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+                                                         ^
+9 warnings generated.
+compiling main.c...
 linking...
-ece342_project\ece342_project.axf: Error: L6218E: Undefined symbol hi2c1 (referred from ssd1306.o).
-Not enough information to list image symbols.
-Not enough information to list load addresses in the image map.
-Finished: 2 information, 0 warning and 1 error messages.
-"ece342_project\ece342_project.axf" - 1 Error(s), 1 Warning(s).
+Program Size: Code=19136 RO-data=876 RW-data=16 ZI-data=4072  
+FromELF: creating hex file...
+"ece342_project\ece342_project.axf" - 0 Error(s), 9 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -65,8 +111,7 @@ Package Vendor: Keil
 
    * Component: ARM::CMSIS:CORE:5.6.0
       Include file:  CMSIS/Core/Include/tz_context.h
-Target not created.
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

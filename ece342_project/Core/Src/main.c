@@ -260,6 +260,7 @@ int main(void)
 	
   while (1)
   {
+		HAL_Delay(1000);
 		//calibrating to get avg values
 		calibrate();
 		/*for (int i = 0;i<20;i++){
@@ -280,15 +281,14 @@ int main(void)
 		*/
 		sprintf(msg, "avg x: %d, y: %d, z:%d\n",(int)x_avg, y_avg, z_avg);
 		print_msg(msg);
-		HAL_Delay(1000);
-		
+		HAL_Delay(100);
 		for (int i = 0; i < 20; i++)
 		{
 			spi_read_new(0x0E, &data, 2); //xdata
 			data = swap_bytes(data);
 			//x_acPmod OLEDrgb cl[i] = return_value(data);
-			data = swap_bytes(data);
 			spi_read_new(0x10, &data, 2); //ydata
+			data = swap_bytes(data);
 			y_accl[i] = return_value(data);
 			spi_read_new(0x12, &data, 2); //zdata
 			data = swap_bytes(data);
@@ -305,6 +305,8 @@ int main(void)
     if(totave[i]>threshhold && flag==0)
     {
        step_count=step_count+1;
+			drawline(0x0,0x0, 0x5F, 0x3F);
+	cleardisplay();
        flag=1;
     }
     else if (totave[i] > threshhold && flag==1)
@@ -318,7 +320,7 @@ int main(void)
 	}
 		sprintf(msg, "step_count: %d\n",(int)step_count);
 		print_msg(msg);
-		//if( 0 == 1){
+	if( 0 == 1){
 		spi_read_new(0x0E, &data, 2); //xdata
 		data = return_value(data);
 		sprintf(msg, "\nx data (%d)(0x%x)\r\n", (int) data, data);
@@ -340,7 +342,7 @@ int main(void)
 	data = return_value(data);
 	sprintf(msg, "z data (%d)\r\n", (int) data);
 	print_msg(msg);
-	//}
+	}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

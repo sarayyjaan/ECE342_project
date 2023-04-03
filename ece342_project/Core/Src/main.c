@@ -246,8 +246,9 @@ int main(void)
 	SSD1306_Fill(0x00);*/
 	uint8_t data=0;
 	
-	//oled_init();
+	oled_init();
 	drawline(0x0,0x0, 0x5F, 0x3F);
+	HAL_Delay(500);
 //<<<<<<< HEAD
 	cleardisplay();
 

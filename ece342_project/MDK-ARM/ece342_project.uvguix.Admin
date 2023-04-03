@@ -1865,20 +1865,20 @@
       <ActiveTab>0</ActiveTab>
       <Doc>
         <Name>../Core/Src/main.c</Name>
-        <ColumnNumber>16</ColumnNumber>
-        <TopLine>245</TopLine>
-        <CurrentLine>254</CurrentLine>
+        <ColumnNumber>5</ColumnNumber>
+        <TopLine>278</TopLine>
+        <CurrentLine>309</CurrentLine>
         <Folding>1</Folding>
-        <ContractedFolders>265,433</ContractedFolders>
+        <ContractedFolders>263,430</ContractedFolders>
         <PaneID>0</PaneID>
       </Doc>
       <Doc>
         <Name>..\Core\Src\spi.c</Name>
-        <ColumnNumber>0</ColumnNumber>
-        <TopLine>35</TopLine>
-        <CurrentLine>281</CurrentLine>
+        <ColumnNumber>28</ColumnNumber>
+        <TopLine>26</TopLine>
+        <CurrentLine>262</CurrentLine>
         <Folding>1</Folding>
-        <ContractedFolders>5,33,71,129,246</ContractedFolders>
+        <ContractedFolders>5,33,71,127,244</ContractedFolders>
         <PaneID>0</PaneID>
       </Doc>
       <Doc>

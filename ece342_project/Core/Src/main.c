@@ -248,7 +248,6 @@ int main(void)
 	//oled_init();
 	drawline(0x0,0x0, 0x5F, 0x3F);
 	cleardisplay();
-
 	drawpixel(2, 2);
 	drawpixel(1, 3);
 	HAL_Delay(500);
@@ -305,8 +304,7 @@ int main(void)
     if(totave[i]>threshhold*10 && flag==0)
     {
        step_count=step_count+1;
-			drawline(0x0,0x0, 0x5F, 0x3F);
-	cleardisplay();
+				drawpixel((step_count +1)*5, 1);
        flag=1;
     }
     else if (totave[i] > threshhold && flag==1)

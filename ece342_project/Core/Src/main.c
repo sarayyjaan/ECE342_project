@@ -136,7 +136,6 @@ void calibrate(){
 			data = swap_bytes(data);
 			z_buff[i] = return_value(data);
 			z_avg = z_buff[i] + z_avg;
-			HAL_Delay(100);
 		}
 	z_avg = z_avg / 20;
 }
@@ -246,15 +245,15 @@ int main(void)
 	SSD1306_Fill(0x00);
 	uint8_t data=0;
 	
-	oled_init();
+	//oled_init();
 	drawline(0x0,0x0, 0x5F, 0x3F);
 	cleardisplay();
-	drawpixel(0x2, 0x2, 0x3E);
-	drawpixel(0x3, 0x3, 0x3E);
-	drawpixel(0x4, 0x4, 0x3E);
-	/*HAL_Delay(500);
+	drawpixel(96 - 1, 96 - 1);
+	drawpixel(0x3, 0x3);
+	drawpixel(0x4, 0x4);
+	HAL_Delay(500);
 	oled_clear_screen();
-	FontDef_t font = Font_7x10;
+	/*FontDef_t font = Font_7x10;
 	SSD1306_COLOR_t white = SSD1306_COLOR_WHITE;
 	SSD1306_Putc('a', &font, white);*/
 	
@@ -298,11 +297,12 @@ int main(void)
 			+ ((z_buff[i] - z_avg) * (z_buff[i] - z_avg))); //should not be moving in the z direction
 			
 			totave[i] = (totvect[i] + totvect[i - 1]) / 2 ;
+			//totave[i] = (totvect[i] - totvect[i - 1]);
 		sprintf(msg, "totave: %d\n",(int)totave[i]);
 		print_msg(msg);
 			
     HAL_Delay(100);
-    if(totave[i]>threshhold && flag==0)
+    if(totave[i]>threshhold*10 && flag==0)
     {
        step_count=step_count+1;
 			drawline(0x0,0x0, 0x5F, 0x3F);

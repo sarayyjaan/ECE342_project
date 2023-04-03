@@ -116,7 +116,16 @@ HAL_StatusTypeDef oled_write(uint8_t *cmd, uint8_t len){
 	HAL_GPIO_WritePin(LED_display_GPIO_Port, LED_display_Pin, 1);
 	return ret;
 }
-
+HAL_StatusTypeDef oled_data_write(uint8_t *data, uint8_t len){
+	HAL_StatusTypeDef ret;
+	
+	HAL_GPIO_WritePin(D_C_GPIO_Port, D_C_Pin, 1);
+	//uint8_t command_byte = CMD_DISPLAYOFF;
+	ret = HAL_SPI_Transmit(&hspi1, data, len, 100);
+	HAL_GPIO_WritePin(LED_display_GPIO_Port, LED_display_Pin, 1);
+	return ret;
+	
+}
 void oled_init(){
 	
 	//bring d/c low
@@ -247,10 +256,10 @@ void oled_clear_screen(){
 }
 
 
-void drawpixel(uint8_t c, uint8_t r, uint16_t pixelColor)
+void drawpixel(uint8_t c, uint8_t r)
 {
 	uint8_t data[2];
-	uint8_t cmds[9];
+	uint8_t cmds[6];
 	//set column start and end
 	cmds[0] = CMD_SETCOLUMNADDRESS; 		
 	cmds[1] = c;					// Set the starting column coordinates
@@ -261,14 +270,14 @@ void drawpixel(uint8_t c, uint8_t r, uint16_t pixelColor)
 	cmds[4] = r;					// Set the starting row coordinates
 	cmds[5] = OLEDRGB_HEIGHT - 1;					// Set the finishing row coordinates
 
-	cmds[6] = 0xFF;
-	cmds[7] = 0xFF;
-	//cmds[8] = 0xFF;
-	oled_write(cmds,8);
-	//oled_write(data,2);
+	data[0] = 0xFF;
+	data[1] = 0xFF;
+	oled_write(cmds,6);
+	oled_data_write (data, 2);
 	HAL_Delay(50);
 	
 }
+
 void drawline(uint8_t c1, uint8_t r1, uint8_t c2, uint8_t r2)
 {
 	uint8_t cmds[8];

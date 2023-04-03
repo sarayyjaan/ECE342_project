@@ -258,7 +258,11 @@ void oled_clear_screen(){
 void drawpixel(uint8_t c, uint8_t r)
 {
 	uint8_t data[2];
+//<<<<<<< HEAD
 	uint8_t cmds[6];
+///=======
+	//uint8_t cmds[8];
+///>>>>>>> 7d9cc93 (added draw rectangle and tested it in main)
 	//set column start and end
 	cmds[0] = CMD_SETCOLUMNADDRESS; 		
 	cmds[1] = c;					// Set the starting column coordinates
@@ -304,5 +308,35 @@ void cleardisplay()
 	cmds[3] = OLEDRGB_WIDTH - 1;	// Set the finishing column coordinates;
 	cmds[4] = OLEDRGB_HEIGHT - 1;	// Set the finishing row coordinates;
 	oled_write(cmds,5);
+	HAL_Delay(50);
+}
+
+void drawRectangle(uint8_t c1, uint8_t r1, uint8_t c2, uint8_t r2){
+	uint8_t cmds[11];
+	
+	uint8_t set_fill[2];
+	set_fill[0] = CMD_FILLWINDOW;
+	set_fill[1] = ENABLE_FILL;
+	oled_write(set_fill, 2);
+	HAL_Delay(50);
+	//cmds[0] = CMD_FILLWINDOW;		//fill window
+  //cmds[1] = ENABLE_FILL;
+  cmds[0] = CMD_DRAWRECTANGLE;	//draw rectangle
+	cmds[1] = c1;					// start column
+	cmds[2] = r1;					// start row
+	cmds[3] = c2;					// end column
+	cmds[4] = r2;					//end row
+
+	cmds[5] = 0x3E;	//R					
+	cmds[6] = 0x3F;	//G
+	cmds[7] = 0x3E;	//R
+
+
+		cmds[8] = 0x3E;	//R					
+		cmds[9] = 0x3F;	//G
+		cmds[10] = 0x3E;	//R
+
+	
+	oled_write(cmds,11);
 	HAL_Delay(50);
 }

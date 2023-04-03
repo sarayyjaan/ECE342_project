@@ -340,3 +340,142 @@ void drawRectangle(uint8_t c1, uint8_t r1, uint8_t c2, uint8_t r2){
 	oled_write(cmds,11);
 	HAL_Delay(50);
 }
+
+void draw0(uint8_t c1, uint8_t r1){
+	drawRectangle(c1, r1, c1+0xA, r1+0x28);
+	drawRectangle(c1, r1, c1+0x1E, r1+0xA);
+	drawRectangle(c1, r1+0x1E, c1+0x1E, r1+0x28);
+	drawRectangle(c1+0x14, r1, c1+0x1E, r1+0x28);
+}
+
+void draw1(uint8_t c1, uint8_t r1){
+	drawRectangle(c1+0x14, r1, c1+0x1E, r1+0x28);
+}
+
+void draw2(uint8_t c1, uint8_t r1){
+	drawRectangle(c1, r1, c1+0x1E, r1+0xA);
+	drawRectangle(c1, r1+0x1E, c1+0x1E, r1+0x28);
+	drawRectangle(c1, r1+0x10, c1+0x1E, r1+0x18);
+	drawRectangle(c1+0x14, r1, c1+0x1E, r1+0x18);
+	drawRectangle(c1, r1+0x10, c1+0xA, r1+0x28);
+}
+
+void draw3(uint8_t c1, uint8_t r1){
+	drawRectangle(c1, r1, c1+0x1E, r1+0xA);
+	drawRectangle(c1, r1+0x1E, c1+0x1E, r1+0x28);
+	drawRectangle(c1, r1+0x10, c1+0x1E, r1+0x18);
+	drawRectangle(c1+0x14, r1, c1+0x1E, r1+0x28);
+}
+
+void draw4(uint8_t c1, uint8_t r1){
+	drawRectangle(c1+0x14, r1, c1+0x1E, r1+0x28);
+	drawRectangle(c1, r1+0x10, c1+0x1E, r1+0x18);
+	drawRectangle(c1, r1, c1+0xA, r1+0x18);
+}
+
+void draw5(uint8_t c1, uint8_t r1){
+	drawRectangle(c1, r1, c1+0x1E, r1+0xA);
+	drawRectangle(c1, r1+0x1E, c1+0x1E, r1+0x28);
+	drawRectangle(c1, r1+0x10, c1+0x1E, r1+0x18);
+	drawRectangle(c1+0x14, r1+0x10, c1+0x1E, r1+0x28);
+	drawRectangle(c1, r1, c1+0xA, r1+0x18);
+}
+
+void draw6(uint8_t c1, uint8_t r1){
+	draw5(c1,r1);
+	drawRectangle(c1, r1, c1+0xA, r1+0x28);
+}
+
+void draw7(uint8_t c1, uint8_t r1){
+	draw1(c1,r1);
+	drawRectangle(c1, r1, c1+0x1E, r1+0xA);
+}
+
+void draw8(uint8_t c1, uint8_t r1){
+	draw4(c1, r1);
+	draw0(c1, r1);
+}
+void draw9(uint8_t c1, uint8_t r1){
+	draw5(c1, r1);
+	draw1(c1, r1);
+}
+
+void drawNumber(int num){
+	int ones = num%10;
+	int tens = num/10;
+	
+	switch(ones){
+		case 0:
+			draw0(0x3A,0xF);
+			break;
+		case 1:
+			draw1(0x3A,0xF);
+			break;
+		case 2:
+			draw2(0x3A,0xF);
+			break;
+		case 3:
+			draw3(0x3A,0xF);
+			break;
+		case 4:
+			draw4(0x3A,0xF);
+			break;
+		case 5:
+			draw5(0x3A,0xF);
+			break;
+		case 6:
+			draw6(0x3A,0xF);
+			break;
+		case 7:
+			draw7(0x3A,0xF);
+			break;
+		case 8:
+			draw8(0x3A,0xF);
+			break;
+		case 9:
+			draw9(0x3A,0xF);
+			break;
+		default:
+			draw0(0x3A,0xF);
+			break;
+		
+	}
+	
+	switch(tens){
+		case 0:
+			draw0(0xD,0xF);
+			break;
+		case 1:
+			draw1(0xD,0xF);
+			break;
+		case 2:
+			draw2(0xD,0xF);
+			break;
+		case 3:
+			draw3(0xD,0xF);
+			break;
+		case 4:
+			draw4(0xD,0xF);
+			break;
+		case 5:
+			draw5(0xD,0xF);
+			break;
+		case 6:
+			draw6(0xD,0xF);
+			break;
+		case 7:
+			draw7(0xD,0xF);
+			break;
+		case 8:
+			draw8(0xD,0xF);
+			break;
+		case 9:
+			draw9(0xD,0xF);
+			break;
+		default:
+			draw0(0xD,0xF);
+			break;
+		
+	}
+		
+}

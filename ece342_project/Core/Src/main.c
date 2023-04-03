@@ -266,6 +266,9 @@ int main(void)
 	
 	//bool fill = 1;
 	drawRectangle(0x20,0x20, 0x30, 0x30);
+	HAL_Delay(500);
+	oled_clear_screen();
+	drawNumber(29);
 //>>>>>>> 7d9cc93 (added draw rectangle and tested it in main)
 	/*FontDef_t font = Font_7x10;
 	SSD1306_COLOR_t white = SSD1306_COLOR_WHITE;

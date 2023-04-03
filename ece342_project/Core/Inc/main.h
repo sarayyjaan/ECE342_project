@@ -61,9 +61,12 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+uint16_t swap_bytes(uint16_t x);
+uint16_t return_value(uint16_t inp);
 void print_msg(char * msg);
 void testing_read(void);
-HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+void adxl362_read_y(int16_t *pData);
+HAL_StatusTypeDef spi_read(uint8_t regAddr, uint8_t *pData, uint8_t len);
 HAL_StatusTypeDef oled_write(uint8_t *cmd, uint8_t len);
 void oled_init();
 void oled_clear_screen();

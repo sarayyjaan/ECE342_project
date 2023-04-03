@@ -45,5 +45,9 @@
  #define ADXL362_REG_POWER_CTL           0x2D
  #define ADXL362_REG_SELF_TEST           0x2E
  
- 
+void adxl362_init(void); 
+void adxl362_start(void);
+int16_t adxl362_read_x(int16_t *pData);
+void adxl362_read_y(int16_t *pData);
+uint16_t convert2stoBinary(uint16_t inp);
  #endif

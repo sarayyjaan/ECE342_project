@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <math.h>
+#include "adxl362.h"
 #include "ssd1306.h"
 /* USER CODE END Includes */
 
@@ -68,7 +69,7 @@ static void MX_TIM6_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 /* USER CODE BEGIN PFP */
-uint16_t swap_bytes(uint16_t x);
+//uint16_t swap_bytes(uint16_t x);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -80,7 +81,7 @@ void print_msg(char * msg) {
 void testing_read(void){
 	print_msg("Test\n");
 	uint8_t value=1;
-	spi_read(0x00, &value);
+	spi_read_old(0x00, &value);
 	char msg[100];
 	
 	if(value == 0xAD){
@@ -142,23 +143,24 @@ uint16_t return_value(uint16_t inp){
 
 int x_avg, y_avg, z_avg;
 void calibrate(){
+	print_msg("Calibrating ..\n");
 	int data = 0;
 	for (int i = 0;i<20;i++){
-			spi_read_new(0x0E, &data, 2); //xdata
+			spi_read(0x0E, &data, 2); //xdata
 			data = swap_bytes(data);
 			x_buff[i] = return_value(data);
 			x_avg = x_buff[i] + x_avg;
 	}
 	x_avg = x_avg / 20;
 	for (int i = 0;i<20;i++){
-			spi_read_new(0x10, &data, 2); //xdata
+			spi_read(0x10, &data, 2); //xdata
 			data = swap_bytes(data);
 			y_buff[i] = return_value(data);
 			y_avg = y_buff[i] + y_avg;
 	}
 	y_avg = y_avg / 20;
 	for (int i = 0;i<20;i++){
-			spi_read_new(0x12, &data, 2); //xdata
+			spi_read(0x12, &data, 2); //xdata
 			data = swap_bytes(data);
 			z_buff[i] = return_value(data);
 			z_avg = z_buff[i] + z_avg;
@@ -223,50 +225,44 @@ int main(void)
 	char msg[100];
 	
 	//configure?
-	uint8_t setting = 0x05;
+	/*uint8_t setting = 0x05;
 	spi_write(0x20, &setting); //threshold active L
 	setting = 0x00;
 	spi_write(0x21, &setting); //threshold active H	
 	setting = 0x02;
 	spi_write(0x22, &setting); //time act
 	setting = 0xFA;
-	setting = 0xFA;
 	spi_write(0x23, &setting); //inactivity
 	setting = 0x02;
 	spi_write(0x25, &setting); //inactivity time
 	setting = 0x03;
 	spi_write(0x27, &setting); //act/inactivity control reg
-	setting = 0x83;
+	setting = 0x03;
 	spi_write(0x2c, &setting); //general setting (filter ctl)
 	setting = 0x02;
 	spi_write(0x2D, &setting); //turn on measure*/
-	//adxl362_init();
+	adxl362_init();
 	//self test mode
 	print_msg("call self test\n");
 	uint8_t self_test=0x01;
 	spi_write(SELF_TEST,&self_test);
 	print_msg("reading x\n");
 	
-	spi_read(0x08, &value); //xdata
+	spi_read_old(0x08, &value); //xdata
 	sprintf(msg, "x data (%d)(0x%x)\r\n", (int) value, value);
 	print_msg(msg);
 	
-	spi_read(0x09, &value); //ydata
+	spi_read_old(0x09, &value); //ydata
 	sprintf(msg, "y data (%d)\r\n", (int) value);
 	print_msg(msg);
 	
-	spi_read(0x0A, &value); //zdata
+	spi_read_old(0x0A, &value); //zdata
 	sprintf(msg, "z data (%d)\r\n", (int) value);
 	print_msg(msg);
 	
 	//deassert st
 	self_test=0x00;
 	spi_write(0x2E,&self_test);
-	//int x_data = 0, y_data = 0 , z_data = 0;
-	//int val;
-	//self_test=0x00;
-	//spi_write(SELF_TEST,&self_test);
-	//int x_avg, y_avg, z_avg;
 	/*oled_init();
 	SSD1306_Fill(0xff);
 	HAL_Delay(500);
@@ -276,31 +272,18 @@ int main(void)
 	oled_init();
 	drawline(0x0,0x0, 0x5F, 0x3F);
 	HAL_Delay(500);
-//<<<<<<< HEAD
 	cleardisplay();
 	drawpixel(2, 2);
-	drawpixel(1, 3);
 	HAL_Delay(500);
-	oled_clear_screen();
-//=======
-	//cleardisplay();
-	//drawpixel(0x2, 0xA, 0x3E);
-	//drawpixel(0x3, 0xA, 0x3E);
-	//drawpixel(0x4, 0xA, 0x3E);
-	HAL_Delay(500);
-	oled_clear_screen();
+	cleardisplay();
 	
 	//bool fill = 1;
 	drawRectangle(0x20,0x20, 0x30, 0x30);
 	HAL_Delay(500);
 	oled_clear_screen();
-	//drawNumber(29);
-//>>>>>>> 7d9cc93 (added draw rectangle and tested it in main)
-	/*FontDef_t font = Font_7x10;
-	SSD1306_COLOR_t white = SSD1306_COLOR_WHITE;
-	SSD1306_Putc('a', &font, white);*/
 	//calibrating to get avg values
 	calibrate();
+	print_msg("Done calibrating\n");
   while (1)
   {
 		HAL_Delay(1000);
@@ -325,14 +308,17 @@ int main(void)
 		for (int i = 0; i < 20; i++)
 		{
 			HAL_Delay(800);
-			spi_read_new(0x0E, &data, 2); //xdata
+			spi_read(0x0E, &data, 2); //xdata
 			data = swap_bytes(data);
 			x_accl[i] = return_value(data);
-			sprintf(msg, "x data (%d), (0x%x)\r\n", x_accl[i], x_accl[i]);
+			sprintf(msg, "in: x data (%d), (0x%x)\r\n", x_accl[i], x_accl[i]);
 			print_msg(msg);
+			//x_accl[i] = adxl362_read_x(&data);
+			//sprintf(msg, "fun x data (%d), (0x%x)\r\n", x_accl[i], x_accl[i]);
+			//print_msg(msg);
 			
 			
-			spi_read_new(0x10, &data, 2); //ydata
+			spi_read(0x10, &data, 2); //ydata
 			sprintf(msg, "full: y data (%d) , (0x%x)\r\n", data, data);
 			print_msg(msg);
 			/*Testing purposes for lsb and msb
@@ -345,7 +331,9 @@ int main(void)
 			sprintf(msg, "msb: y data (%d) , (0x%x)\r\n", data, data);
 			
 			print_msg(msg);*/
-			
+			//adxl362_read_y(&data);
+			//sprintf(msg, "a y data (%d), (0x%x)\r\n", y_accl[i],y_accl[i]);
+			print_msg(msg);
 			y_accl[i] = return_value(data);
 			y_accl[i] = y_accl[i] / 1000;
 			//y_accl[i] = y_accl[i] / (2000 / 2);
@@ -353,7 +341,7 @@ int main(void)
 			print_msg(msg);
 			
 			
-			spi_read_new(0x12, &data, 2); //zdata
+			spi_read(0x12, &data, 2); //zdata
 			data = swap_bytes(data);
 			z_accl[i] = return_value(data);
 			sprintf(msg, "z data (%d)\r\n", z_accl[i]);
@@ -363,7 +351,6 @@ int main(void)
 			+ ((z_buff[i] - z_avg) * (z_buff[i] - z_avg))); //should not be moving in the z direction
 			
 			totave[i] = (totvect[i] + totvect[i - 1]) / 2 ;
-			//totave[i] = (totvect[i] - totvect[i - 1]);
 		sprintf(msg, "totave: %d\n",(int)totave[i]);
 		//print_msg(msg);
 			
@@ -387,7 +374,7 @@ int main(void)
 		sprintf(msg, "step_count: %d\n",(int)step_count);
 		print_msg(msg);
 	if( 0 == 1){
-		spi_read_new(0x0E, &data, 2); //xdata
+		spi_read(0x0E, &data, 2); //xdata
 		data = return_value(data);
 		sprintf(msg, "\nx data (%d)(0x%x)\r\n", (int) data, data);
 		print_msg(msg);
@@ -396,7 +383,7 @@ int main(void)
 		sprintf(msg, "processing x data (%d)\r\n", x_data);
 		print_msg(msg);*/
 	
-	spi_read_new(0x10, &data, 2); //ydata
+	spi_read(0x10, &data, 2); //ydata
 	data = return_value(data);
 	sprintf(msg, "y data (%d)(0x%x)\r\n", (int) data, data);
 	print_msg(msg);
@@ -404,7 +391,7 @@ int main(void)
 	//adxl362_read_y(&val);
 	//sprintf(msg, "y data (%d)\r\n", val);
 	//print_msg(msg);
-	spi_read_new(0x12, &data, 2); //zdata
+	spi_read(0x12, &data, 2); //zdata
 	data = return_value(data);
 	sprintf(msg, "z data (%d)\r\n", (int) data);
 	print_msg(msg);

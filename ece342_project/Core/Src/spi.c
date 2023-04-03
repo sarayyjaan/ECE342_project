@@ -31,7 +31,7 @@ HAL_StatusTypeDef spi_write(uint8_t regAddr, uint8_t *pData){
 	return ret;
 }
 
-HAL_StatusTypeDef spi_read(uint8_t regAddr, uint8_t *pData){
+HAL_StatusTypeDef spi_read_old(uint8_t regAddr, uint8_t *pData){
 	HAL_StatusTypeDef ret;
 	//print_msg("in read\n");
 	HAL_GPIO_WritePin(CS_ACC_GPIO_Port, CS_ACC_Pin, GPIO_PIN_RESET); // pull the CS low to enable the slave
@@ -69,7 +69,7 @@ HAL_StatusTypeDef spi_read(uint8_t regAddr, uint8_t *pData){
 	return ret;
 }
 //this function seems to never read two bytes of data; currently useless
-HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len){
+HAL_StatusTypeDef spi_read(uint8_t regAddr, uint8_t *pData, uint8_t len){
 	HAL_StatusTypeDef ret;
 	//print_msg("in read\n");
 	HAL_GPIO_WritePin(CS_ACC_GPIO_Port, CS_ACC_Pin, 0);
@@ -92,7 +92,6 @@ HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len){
 		print_msg("Bad send\n");
 		Error_Handler();
 	}
-	//print_msg("ok transmit\n");
 	
 	ret = HAL_SPI_Receive(&hspi1, pData, len, 100);
 	if (ret != HAL_OK){
@@ -100,9 +99,7 @@ HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len){
 		HAL_GPIO_WritePin(CS_ACC_GPIO_Port, CS_ACC_Pin, 1);
 		print_msg("Bad read\n");
 		Error_Handler();
-	}
-	//print_msg("ok transmit\n");
-	
+	}	
 	HAL_GPIO_WritePin(CS_ACC_GPIO_Port, CS_ACC_Pin, 1);
 	return ret;
 }

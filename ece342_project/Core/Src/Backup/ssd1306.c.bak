@@ -278,27 +278,28 @@ void SSD1306_Fill(SSD1306_COLOR_t color) {
 	/* Set memory */
 	memset(SSD1306_Buffer, (color == SSD1306_COLOR_BLACK) ? 0x00 : 0xFF, sizeof(SSD1306_Buffer));
 }
-
+#include "main.h"
 void SSD1306_DrawPixel(uint16_t x, uint16_t y, SSD1306_COLOR_t color) {
-	if (
+	drawpixel(x, y);
+	/*if (
 		x >= SSD1306_WIDTH ||
 		y >= SSD1306_HEIGHT
 	) {
-		/* Error */
+		// Error //
 		return;
 	}
 	
-	/* Check if pixels are inverted */
+	// Check if pixels are inverted ./
 	if (SSD1306.Inverted) {
 		color = (SSD1306_COLOR_t)!color;
 	}
 	
-	/* Set color */
+	// Set color //
 	if (color == SSD1306_COLOR_WHITE) {
 		SSD1306_Buffer[x + (y / 8) * SSD1306_WIDTH] |= 1 << (y % 8);
 	} else {
 		SSD1306_Buffer[x + (y / 8) * SSD1306_WIDTH] &= ~(1 << (y % 8));
-	}
+	}*/
 }
 
 void SSD1306_GotoXY(uint16_t x, uint16_t y) {
@@ -326,7 +327,8 @@ char SSD1306_Putc(char ch, FontDef_t* Font, SSD1306_COLOR_t color) {
 			if ((b << j) & 0x8000) {
 				SSD1306_DrawPixel(SSD1306.CurrentX + j, (SSD1306.CurrentY + i), (SSD1306_COLOR_t) color);
 			} else {
-				SSD1306_DrawPixel(SSD1306.CurrentX + j, (SSD1306.CurrentY + i), (SSD1306_COLOR_t)!color);
+				//i assume this is draw background color
+				//SSD1306_DrawPixel(SSD1306.CurrentX + j, (SSD1306.CurrentY + i), (SSD1306_COLOR_t)!color);
 			}
 		}
 	}

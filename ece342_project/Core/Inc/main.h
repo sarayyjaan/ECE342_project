@@ -96,6 +96,8 @@ void drawNumber(int num);
 #define CS_ACC_GPIO_Port GPIOA
 #define LD1_Pin GPIO_PIN_0
 #define LD1_GPIO_Port GPIOB
+#define ADXL_INTMAP1_Pin GPIO_PIN_1
+#define ADXL_INTMAP1_GPIO_Port GPIOB
 #define PMOD_EN_Pin GPIO_PIN_13
 #define PMOD_EN_GPIO_Port GPIOB
 #define LD3_Pin GPIO_PIN_14

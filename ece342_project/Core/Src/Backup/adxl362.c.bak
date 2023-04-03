@@ -4,19 +4,29 @@
 #include "spi.h"
 
 extern SPI_HandleTypeDef hspi1;
+uint16_t convert2stoBinary(uint16_t inp){
+	inp = inp ^ 0x07ff; //xor with 1st 12 bits
+	inp = inp - 1;
+	return inp;
+}
 void adxl362_init(void){
 	
 	//adxl345, modify pwr_ctl writing 1, 
 	//set the measure bit, reset sleep bit in power_ctl
 	//data format register set the range
-	uint8_t setting = 0xFA;
+	uint8_t setting = INACT_STILL_THRESH;
 	spi_write(ADXL362_REG_THRESH_INACT_L, &setting); //inactivity
-	setting = 0x83;
+	setting = 0x03; //sets range to 2g
 	spi_write(ADXL362_REG_FILTER_CTL, &setting); //general setting (filter ctl)
-	setting = 0x02;
+	setting = BEGIN_MEASURE;
 	spi_write(ADXL362_REG_POWER_CTL, &setting); //turn on measure
 }
-
+int16_t adxl362_read_x(int16_t *pData){
+	spi_read(0x0E, &pData, 2); //xdata
+	*pData = swap_bytes(*pData);
+	*pData = return_value(*pData);
+	return *pData;
+}
 /*void adxl362_start(void){
 	spi_write(ADXL362_REG_THRESH_ACT_L, 0xFA);
 }*/
@@ -61,10 +71,4 @@ void adxl362_read_y(int16_t *pData){
 	}
 	HAL_GPIO_WritePin(CS_ACC_GPIO_Port, CS_ACC_Pin, GPIO_PIN_SET); //pull the CS pin high to disable slave
 
-}
-
-uint16_t convert2stoBinary(uint16_t inp){
-	inp = inp ^ 0x07ff; //xor with 1st 12 bits
-	inp = inp - 1;
-	return inp;
 }

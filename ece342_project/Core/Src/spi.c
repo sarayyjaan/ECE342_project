@@ -277,7 +277,7 @@ void drawpixel(uint8_t c, uint8_t r)
 	data[1] = 0xFF;
 	oled_write(cmds,6);
 	oled_data_write (data, 2);
-	HAL_Delay(50);
+	HAL_Delay(1);
 	
 }
 

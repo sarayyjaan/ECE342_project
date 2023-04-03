@@ -318,7 +318,7 @@ void drawRectangle(uint8_t c1, uint8_t r1, uint8_t c2, uint8_t r2){
 	set_fill[0] = CMD_FILLWINDOW;
 	set_fill[1] = ENABLE_FILL;
 	oled_write(set_fill, 2);
-	HAL_Delay(50);
+	HAL_Delay(1);
 	//cmds[0] = CMD_FILLWINDOW;		//fill window
   //cmds[1] = ENABLE_FILL;
   cmds[0] = CMD_DRAWRECTANGLE;	//draw rectangle

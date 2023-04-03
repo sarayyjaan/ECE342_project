@@ -240,18 +240,35 @@ int main(void)
 	//self_test=0x00;
 	//spi_write(SELF_TEST,&self_test);
 	//int x_avg, y_avg, z_avg;
-	oled_init();
+	/*oled_init();
 	SSD1306_Fill(0xff);
-	SSD1306_Fill(0x00);
+	HAL_Delay(500);
+	SSD1306_Fill(0x00);*/
 	uint8_t data=0;
 	
-	//oled_init();
+	oled_init();
 	drawline(0x0,0x0, 0x5F, 0x3F);
+	HAL_Delay(500);
+//<<<<<<< HEAD
 	cleardisplay();
 	drawpixel(2, 2);
 	drawpixel(1, 3);
 	HAL_Delay(500);
 	oled_clear_screen();
+//=======
+	//cleardisplay();
+	//drawpixel(0x2, 0xA, 0x3E);
+	//drawpixel(0x3, 0xA, 0x3E);
+	//drawpixel(0x4, 0xA, 0x3E);
+	HAL_Delay(500);
+	oled_clear_screen();
+	
+	//bool fill = 1;
+	drawRectangle(0x20,0x20, 0x30, 0x30);
+	HAL_Delay(500);
+	oled_clear_screen();
+	drawNumber(29);
+//>>>>>>> 7d9cc93 (added draw rectangle and tested it in main)
 	/*FontDef_t font = Font_7x10;
 	SSD1306_COLOR_t white = SSD1306_COLOR_WHITE;
 	SSD1306_Putc('a', &font, white);*/

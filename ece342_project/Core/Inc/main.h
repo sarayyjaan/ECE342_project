@@ -37,6 +37,7 @@ extern "C" {
 #include <stdio.h>
 #include "fonts.h"
 #include "ssd1306.h"
+#include <stdbool.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -67,6 +68,18 @@ HAL_StatusTypeDef oled_write(uint8_t *cmd, uint8_t len);
 void oled_init();
 void oled_clear_screen();
 void drawline(uint8_t c1, uint8_t r1, uint8_t c2, uint8_t r2);
+void drawRectangle(uint8_t c1, uint8_t r1, uint8_t c2, uint8_t r2);
+void draw0(uint8_t c1, uint8_t r1);
+void draw1(uint8_t c1, uint8_t r1);
+void draw2(uint8_t c1, uint8_t r1);
+void draw3(uint8_t c1, uint8_t r1);
+void draw4(uint8_t c1, uint8_t r1);
+void draw5(uint8_t c1, uint8_t r1);
+void draw6(uint8_t c1, uint8_t r1);
+void draw7(uint8_t c1, uint8_t r1);
+void draw8(uint8_t c1, uint8_t r1);
+void draw9(uint8_t c1, uint8_t r1);
+void drawNumber(int num);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

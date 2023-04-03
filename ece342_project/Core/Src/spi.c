@@ -338,7 +338,7 @@ void drawRectangle(uint8_t c1, uint8_t r1, uint8_t c2, uint8_t r2){
 
 	
 	oled_write(cmds,11);
-	HAL_Delay(50);
+	HAL_Delay(1);
 }
 
 void draw0(uint8_t c1, uint8_t r1){

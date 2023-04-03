@@ -68,7 +68,7 @@ static void MX_TIM6_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 /* USER CODE BEGIN PFP */
-unsigned short swap_bytes(unsigned short x);
+uint16_t swap_bytes(uint16_t x);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -103,8 +103,33 @@ int totave[20], totvect[20];
 int step_count = 0;
 int threshhold = 100;
 int flag = 0;
+uint16_t twosToBin(uint16_t input){	
+	
+	//flip all 11 bits
+	input = input ^ 0x07ff;
+	
+	//subtract 1 to get binary
+	input = input - 1;
+	
+	return input;	
+}
 uint16_t return_value(uint16_t inp){
-	if(inp>=0x8000){
+	int sign = 0; 
+	int result = 0;
+	if(inp >= 0x8000){// If negative
+		sign = 1;
+		inp = twosToBin(inp);
+	}
+	
+	//Get rid of first 4 bits
+	result = inp & 0x07ff;
+
+	if(sign == 1){
+		result = 0 - result;
+	}
+	
+	return result;	
+	/*if(inp>=0x8000){
 			inp = inp ^ 0x07ff; //get's the 2s complement
 			inp= inp-1; //adds 1
 			inp = inp & 0x07ff; //removes 1st 4 sign extended bits
@@ -112,8 +137,9 @@ uint16_t return_value(uint16_t inp){
 		}else{
 			inp = inp & 0x07ff;
 		}
-	return inp;
+	return inp;*/
 };
+
 int x_avg, y_avg, z_avg;
 void calibrate(){
 	int data = 0;
@@ -140,9 +166,10 @@ void calibrate(){
 	z_avg = z_avg / 20;
 }
 
-unsigned short swap_bytes(unsigned short x) {
-  unsigned short bitmask = 0x00FF;
-  unsigned short temp = x & bitmask;
+uint16_t swap_bytes(uint16_t x) {
+	
+  uint16_t bitmask = 0x00ff;
+  uint16_t temp = x & bitmask; //lsbs
   x = x >> 8;
   temp = temp << 8;
   x = x | temp;
@@ -244,7 +271,7 @@ int main(void)
 	SSD1306_Fill(0xff);
 	HAL_Delay(500);
 	SSD1306_Fill(0x00);*/
-	uint8_t data=0;
+	uint16_t data=0;
 	
 	oled_init();
 	drawline(0x0,0x0, 0x5F, 0x3F);
@@ -267,17 +294,16 @@ int main(void)
 	drawRectangle(0x20,0x20, 0x30, 0x30);
 	HAL_Delay(500);
 	oled_clear_screen();
-	drawNumber(29);
+	//drawNumber(29);
 //>>>>>>> 7d9cc93 (added draw rectangle and tested it in main)
 	/*FontDef_t font = Font_7x10;
 	SSD1306_COLOR_t white = SSD1306_COLOR_WHITE;
 	SSD1306_Putc('a', &font, white);*/
-	
+	//calibrating to get avg values
+	calibrate();
   while (1)
   {
 		HAL_Delay(1000);
-		//calibrating to get avg values
-		calibrate();
 		/*for (int i = 0;i<20;i++){
 			spi_read_new(0x0E, &x_data, 2); //xdata
 			x_buff[i] = return_value(x_data);
@@ -296,18 +322,42 @@ int main(void)
 		*/
 		sprintf(msg, "avg x: %d, y: %d, z:%d\n",(int)x_avg, y_avg, z_avg);
 		print_msg(msg);
-		HAL_Delay(100);
 		for (int i = 0; i < 20; i++)
 		{
+			HAL_Delay(800);
 			spi_read_new(0x0E, &data, 2); //xdata
 			data = swap_bytes(data);
-			//x_acPmod OLEDrgb cl[i] = return_value(data);
+			x_accl[i] = return_value(data);
+			sprintf(msg, "x data (%d), (0x%x)\r\n", x_accl[i], x_accl[i]);
+			print_msg(msg);
+			
+			
 			spi_read_new(0x10, &data, 2); //ydata
-			data = swap_bytes(data);
+			sprintf(msg, "full: y data (%d) , (0x%x)\r\n", data, data);
+			print_msg(msg);
+			/*Testing purposes for lsb and msb
+			spi_read(0x10, &data); //ydata
+			data = (uint8_t)data;
+			sprintf(msg, "lsb: y data (%d) , (0x%x)\r\n", data, data);
+			print_msg(msg);
+			spi_read(0x11, &data); //ydata
+			data = (uint8_t)data;
+			sprintf(msg, "msb: y data (%d) , (0x%x)\r\n", data, data);
+			
+			print_msg(msg);*/
+			
 			y_accl[i] = return_value(data);
+			y_accl[i] = y_accl[i] / 1000;
+			//y_accl[i] = y_accl[i] / (2000 / 2);
+			sprintf(msg, "return y data (%d), (0x%x)\r\n", y_accl[i],y_accl[i]);
+			print_msg(msg);
+			
+			
 			spi_read_new(0x12, &data, 2); //zdata
 			data = swap_bytes(data);
 			z_accl[i] = return_value(data);
+			sprintf(msg, "z data (%d)\r\n", z_accl[i]);
+			//print_msg(msg);
 			totvect[i] = sqrt(((x_accl[i] - x_avg)*(x_accl[i] - x_avg)) 
 			+ ((y_accl[i] - y_avg) * (y_accl[i] - y_avg)) 
 			+ ((z_buff[i] - z_avg) * (z_buff[i] - z_avg))); //should not be moving in the z direction
@@ -315,13 +365,14 @@ int main(void)
 			totave[i] = (totvect[i] + totvect[i - 1]) / 2 ;
 			//totave[i] = (totvect[i] - totvect[i - 1]);
 		sprintf(msg, "totave: %d\n",(int)totave[i]);
-		print_msg(msg);
+		//print_msg(msg);
 			
     HAL_Delay(100);
     if(totave[i]>threshhold*10 && flag==0)
     {
        step_count=step_count+1;
-				drawpixel((step_count +1)*5, 1);
+			oled_clear_screen();
+				drawNumber(step_count);
        flag=1;
     }
     else if (totave[i] > threshhold && flag==1)

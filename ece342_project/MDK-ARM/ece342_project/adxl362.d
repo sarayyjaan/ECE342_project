@@ -41,4 +41,5 @@ ece342_project/adxl362.o: ..\Core\Src\adxl362.c ..\Core\Src\adxl362.h \
   ..\Core\Inc\spi.h C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h \
   ..\Core\Inc\fonts.h ..\Core\Inc\ssd1306.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h ..\Core\Src\spi.h
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h \
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h ..\Core\Src\spi.h

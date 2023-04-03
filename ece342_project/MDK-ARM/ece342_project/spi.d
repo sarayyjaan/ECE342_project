@@ -41,4 +41,5 @@ ece342_project/spi.o: ..\Core\Src\spi.c ..\Core\Src\spi.h \
   ..\Core\Inc\spi.h C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h \
   ..\Core\Inc\fonts.h ..\Core\Inc\ssd1306.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h \
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h

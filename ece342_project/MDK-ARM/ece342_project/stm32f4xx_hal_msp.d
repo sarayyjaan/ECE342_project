@@ -41,4 +41,5 @@ ece342_project/stm32f4xx_hal_msp.o: ..\Core\Src\stm32f4xx_hal_msp.c \
   ..\Core\Inc\spi.h C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h \
   ..\Core\Inc\fonts.h ..\Core\Inc\ssd1306.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h \
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h

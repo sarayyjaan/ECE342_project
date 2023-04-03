@@ -27,30 +27,84 @@ Project File Date:  03/31/2023
 <h2>Output:</h2>
 *** Using Compiler 'V6.19', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'ece342_project'
-../Core/Src/main.c(121): warning: incompatible pointer types passing 'int *' to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+../Core/Src/main.c(147): warning: incompatible pointer types passing 'int *' to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
                         spi_read_new(0x0E, &data, 2); //xdata
                                            ^~~~~
-../Core/Inc/main.h(65): note: passing argument to parameter 'pData' here
+../Core/Inc/main.h(66): note: passing argument to parameter 'pData' here
 HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
                                                          ^
-../Core/Src/main.c(128): warning: incompatible pointer types passing 'int *' to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+../Core/Src/main.c(154): warning: incompatible pointer types passing 'int *' to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
                         spi_read_new(0x10, &data, 2); //xdata
                                            ^~~~~
-../Core/Inc/main.h(65): note: passing argument to parameter 'pData' here
+../Core/Inc/main.h(66): note: passing argument to parameter 'pData' here
 HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
                                                          ^
-../Core/Src/main.c(135): warning: incompatible pointer types passing 'int *' to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+../Core/Src/main.c(161): warning: incompatible pointer types passing 'int *' to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
                         spi_read_new(0x12, &data, 2); //xdata
                                            ^~~~~
-../Core/Inc/main.h(65): note: passing argument to parameter 'pData' here
+../Core/Inc/main.h(66): note: passing argument to parameter 'pData' here
 HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
                                                          ^
-3 warnings generated.
+../Core/Src/main.c(328): warning: incompatible pointer types passing 'uint16_t *' (aka 'unsigned short *') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+                        spi_read_new(0x0E, &data, 2); //xdata
+                                           ^~~~~
+../Core/Inc/main.h(66): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+                                                         ^
+../Core/Src/main.c(340): warning: incompatible pointer types passing 'uint16_t *' (aka 'unsigned short *') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+                        spi_read_new(0x10, &data, 2); //ydata
+                                           ^~~~~
+../Core/Inc/main.h(66): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+                                                         ^
+../Core/Src/main.c(343): warning: incompatible pointer types passing 'uint16_t *' (aka 'unsigned short *') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+                        spi_read(0x10, &data); //ydata
+                                       ^~~~~
+../Core/Inc/spi.h(6): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read(uint8_t regAddr, uint8_t *pData);
+                                                     ^
+../Core/Src/main.c(347): warning: incompatible pointer types passing 'uint16_t *' (aka 'unsigned short *') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+                        spi_read(0x11, &data); //ydata
+                                       ^~~~~
+../Core/Inc/spi.h(6): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read(uint8_t regAddr, uint8_t *pData);
+                                                     ^
+../Core/Src/main.c(352): warning: incompatible pointer types passing 'uint16_t *' (aka 'unsigned short *') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+                        spi_read_new(0x10, &data, 2); //ydata
+                                           ^~~~~
+../Core/Inc/main.h(66): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+                                                         ^
+../Core/Src/main.c(366): warning: incompatible pointer types passing 'uint16_t *' (aka 'unsigned short *') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+                        spi_read_new(0x12, &data, 2); //zdata
+                                           ^~~~~
+../Core/Inc/main.h(66): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+                                                         ^
+../Core/Src/main.c(400): warning: incompatible pointer types passing 'uint16_t *' (aka 'unsigned short *') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+                spi_read_new(0x0E, &data, 2); //xdata
+                                   ^~~~~
+../Core/Inc/main.h(66): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+                                                         ^
+../Core/Src/main.c(409): warning: incompatible pointer types passing 'uint16_t *' (aka 'unsigned short *') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+        spi_read_new(0x10, &data, 2); //ydata
+                           ^~~~~
+../Core/Inc/main.h(66): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+                                                         ^
+../Core/Src/main.c(417): warning: incompatible pointer types passing 'uint16_t *' (aka 'unsigned short *') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+        spi_read_new(0x12, &data, 2); //zdata
+                           ^~~~~
+../Core/Inc/main.h(66): note: passing argument to parameter 'pData' here
+HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len);
+                                                         ^
+12 warnings generated.
 compiling main.c...
 linking...
-Program Size: Code=20704 RO-data=876 RW-data=16 ZI-data=5096  
+Program Size: Code=22156 RO-data=1012 RW-data=16 ZI-data=4072  
 FromELF: creating hex file...
-"ece342_project\ece342_project.axf" - 0 Error(s), 3 Warning(s).
+"ece342_project\ece342_project.axf" - 0 Error(s), 12 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -74,7 +128,7 @@ Package Vendor: Keil
 
    * Component: ARM::CMSIS:CORE:5.6.0
       Include file:  CMSIS/Core/Include/tz_context.h
-Build Time Elapsed:  00:00:13
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

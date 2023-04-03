@@ -42,4 +42,5 @@ ece342_project/main.o: ..\Core\Src\main.c ..\Core\Inc\main.h \
   ..\Core\Inc\fonts.h ..\Core\Inc\ssd1306.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h \
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\math.h

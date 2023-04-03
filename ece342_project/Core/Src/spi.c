@@ -68,7 +68,7 @@ HAL_StatusTypeDef spi_read(uint8_t regAddr, uint8_t *pData){
 	HAL_GPIO_WritePin(CS_ACC_GPIO_Port, CS_ACC_Pin, 1); //pull the CS pin high to disable slave
 	return ret;
 }
-
+//this function seems to never read two bytes of data; currently useless
 HAL_StatusTypeDef spi_read_new(uint8_t regAddr, uint8_t *pData, uint8_t len){
 	HAL_StatusTypeDef ret;
 	//print_msg("in read\n");

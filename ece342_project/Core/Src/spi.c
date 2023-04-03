@@ -119,10 +119,9 @@ HAL_StatusTypeDef oled_write(uint8_t *cmd, uint8_t len){
 HAL_StatusTypeDef oled_data_write(uint8_t *data, uint8_t len){
 	HAL_StatusTypeDef ret;
 	
-	HAL_GPIO_WritePin(D_C_GPIO_Port, D_C_Pin, 1);
-	//uint8_t command_byte = CMD_DISPLAYOFF;
-	ret = HAL_SPI_Transmit(&hspi1, data, len, 100);
-	HAL_GPIO_WritePin(LED_display_GPIO_Port, LED_display_Pin, 1);
+	HAL_GPIO_WritePin(D_C_GPIO_Port, D_C_Pin, 1); //set write to high
+	oled_write(data, len);
+	HAL_GPIO_WritePin(D_C_GPIO_Port, D_C_Pin, 0);
 	return ret;
 	
 }

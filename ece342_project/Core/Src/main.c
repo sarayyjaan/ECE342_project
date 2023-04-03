@@ -248,9 +248,9 @@ int main(void)
 	//oled_init();
 	drawline(0x0,0x0, 0x5F, 0x3F);
 	cleardisplay();
-	drawpixel(96 - 1, 96 - 1);
-	drawpixel(0x3, 0x3);
-	drawpixel(0x4, 0x4);
+
+	drawpixel(2, 2);
+	drawpixel(1, 3);
 	HAL_Delay(500);
 	oled_clear_screen();
 	/*FontDef_t font = Font_7x10;

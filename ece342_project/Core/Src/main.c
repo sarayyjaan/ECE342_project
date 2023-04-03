@@ -237,7 +237,11 @@ int main(void)
 	spi_write(0x25, &setting); //inactivity time
 	setting = 0x03;
 	spi_write(0x27, &setting); //act/inactivity control reg
+<<<<<<< HEAD
 	setting = 0x03;
+=======
+	setting = 0x83; //SENSOR_RANGE_2 = 0x03, SENSOR_RANGE_8 = 0x83
+>>>>>>> dfc5383b3a5f09a8a856540d38073a0f33a0d8e1
 	spi_write(0x2c, &setting); //general setting (filter ctl)
 	setting = 0x02;
 	spi_write(0x2D, &setting); //turn on measure*/
@@ -275,12 +279,26 @@ int main(void)
 	cleardisplay();
 	drawpixel(2, 2);
 	HAL_Delay(500);
-	cleardisplay();
+	oled_clear_screen();
+//=======
+	//cleardisplay();
+	//drawpixel(0x2, 0xA, 0x3E);
+	//drawpixel(0x3, 0xA, 0x3E);
+	//drawpixel(0x4, 0xA, 0x3E);
+	//HAL_Delay(500);
+	//oled_clear_screen();
 	
 	//bool fill = 1;
-	drawRectangle(0x20,0x20, 0x30, 0x30);
+	//drawRectangle(0x20,0x20, 0x30, 0x30);
 	HAL_Delay(500);
 	oled_clear_screen();
+	//drawNumber(29);
+//>>>>>>> 7d9cc93 (added draw rectangle and tested it in main)
+	extern FontDef_t Font_7x10;
+	SSD1306_COLOR_t white = SSD1306_COLOR_WHITE;
+	//SSD1306_Putc('a', &Font_7x10, white);
+	SSD1306_Puts("Steps:", &Font_7x10, white);
+	HAL_Delay(1000);
 	//calibrating to get avg values
 	calibrate();
 	print_msg("Done calibrating\n");
@@ -359,6 +377,8 @@ int main(void)
     {
        step_count=step_count+1;
 			oled_clear_screen();
+			SSD1306_GotoXY(0,0);
+			SSD1306_Puts("Steps:", &Font_7x10, white);
 				drawNumber(step_count);
        flag=1;
     }

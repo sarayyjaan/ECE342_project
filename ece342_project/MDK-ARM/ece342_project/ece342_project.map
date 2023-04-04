@@ -5185,7 +5185,7 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-       448          0          0          0          0       4812   adxl362.o
+       448          0          0          0          0       4803   adxl362.o
          0          0       1900          8          0       1261   fonts.o
       3136        232         81          4       2444      21813   main.o
       3084         20         20          0          0      11881   spi.o
@@ -5210,7 +5210,7 @@ Image component sizes
         18          0         24          4          0       2739   system_stm32f4xx.o
 
     ----------------------------------------------------------------------
-     19676        292       2519         24       3992     384134   Object Totals
+     19676        292       2519         24       3992     384125   Object Totals
          0          0         32          0          0          0   (incl. Generated)
        124          0          2          0          2          0   (incl. Padding)
 
@@ -5303,8 +5303,8 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     23108        444       2856         24       4088     385570   Grand Totals
-     23108        444       2856         24       4088     385570   ELF Image Totals
+     23108        444       2856         24       4088     385561   Grand Totals
+     23108        444       2856         24       4088     385561   ELF Image Totals
      23108        444       2856         24          0          0   ROM Totals
 
 ==============================================================================

@@ -12,7 +12,7 @@ uint16_t convert2stoBinary(uint16_t inp){
 }
 void adxl362_init(void){
 	
-	uint8_t setting = INACT_STILL_THRESH;
+	uint8_t setting = 75;
 	spi_write(ADXL362_REG_THRESH_INACT_L, &setting); //sets stationary threshold to 1g
 	setting = 0x03; //sets range to 2g
 	spi_write(ADXL362_REG_FILTER_CTL, &setting); //sets the sensor range to 2g

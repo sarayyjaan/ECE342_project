@@ -142,27 +142,32 @@ uint16_t return_value(uint16_t inp){
 };
 
 int x_avg, y_avg, z_avg;
+int xZero, yZero, zZero;
 void calibrate(){
 	print_msg("Calibrating ..\n");
 	int data = 0;
 	for (int i = 0;i<20;i++){
-			spi_read(0x0E, &data, 2); //xdata
+		x_buff[i] = adxl362_get_x();
+			/*spi_read(0x0E, &data, 2); //xdata
 			data = swap_bytes(data);
 			x_buff[i] = return_value(data);
-			x_avg = x_buff[i] + x_avg;
+			*/
+		x_avg = x_buff[i] + x_avg;
 	}
 	x_avg = x_avg / 20;
 	for (int i = 0;i<20;i++){
-			spi_read(0x10, &data, 2); //xdata
+		y_buff[i] = adxl362_get_y();
+			/*spi_read(0x10, &data, 2); //xdata
 			data = swap_bytes(data);
-			y_buff[i] = return_value(data);
-			y_avg = y_buff[i] + y_avg;
+			y_buff[i] = return_value(data*/
+		y_avg = y_buff[i] + y_avg;
 	}
 	y_avg = y_avg / 20;
 	for (int i = 0;i<20;i++){
-			spi_read(0x12, &data, 2); //xdata
+		z_buff[i] = adxl362_get_z();
+			/*spi_read(0x12, &data, 2); //xdata
 			data = swap_bytes(data);
-			z_buff[i] = return_value(data);
+			z_buff[i] = return_value(data);*/
 			z_avg = z_buff[i] + z_avg;
 		}
 	z_avg = z_avg / 20;
@@ -237,11 +242,8 @@ int main(void)
 	spi_write(0x25, &setting); //inactivity time
 	setting = 0x03;
 	spi_write(0x27, &setting); //act/inactivity control reg
-<<<<<<< HEAD
 	setting = 0x03;
-=======
 	setting = 0x83; //SENSOR_RANGE_2 = 0x03, SENSOR_RANGE_8 = 0x83
->>>>>>> dfc5383b3a5f09a8a856540d38073a0f33a0d8e1
 	spi_write(0x2c, &setting); //general setting (filter ctl)
 	setting = 0x02;
 	spi_write(0x2D, &setting); //turn on measure*/
@@ -267,10 +269,6 @@ int main(void)
 	//deassert st
 	self_test=0x00;
 	spi_write(0x2E,&self_test);
-	/*oled_init();
-	SSD1306_Fill(0xff);
-	HAL_Delay(500);
-	SSD1306_Fill(0x00);*/
 	uint16_t data=0;
 	
 	oled_init();
@@ -280,107 +278,58 @@ int main(void)
 	drawpixel(2, 2);
 	HAL_Delay(500);
 	oled_clear_screen();
-//=======
-	//cleardisplay();
-	//drawpixel(0x2, 0xA, 0x3E);
-	//drawpixel(0x3, 0xA, 0x3E);
-	//drawpixel(0x4, 0xA, 0x3E);
-	//HAL_Delay(500);
-	//oled_clear_screen();
-	
-	//bool fill = 1;
-	//drawRectangle(0x20,0x20, 0x30, 0x30);
 	HAL_Delay(500);
 	oled_clear_screen();
-	//drawNumber(29);
-//>>>>>>> 7d9cc93 (added draw rectangle and tested it in main)
+	
 	extern FontDef_t Font_7x10;
 	SSD1306_COLOR_t white = SSD1306_COLOR_WHITE;
-	//SSD1306_Putc('a', &Font_7x10, white);
+	
 	SSD1306_Puts("Steps:", &Font_7x10, white);
 	HAL_Delay(1000);
 	//calibrating to get avg values
+	start_zero();
+	sprintf(msg, "zero x: %d, y: %d, z:%d\n",(int)xZero, yZero, zZero);
+	print_msg(msg);
 	calibrate();
+	sprintf(msg, "avg x: %d, y: %d, z:%d\n",(int)x_avg, y_avg, z_avg);
+	print_msg(msg);
 	print_msg("Done calibrating\n");
   while (1)
   {
-		HAL_Delay(1000);
-		/*for (int i = 0;i<20;i++){
-			spi_read_new(0x0E, &x_data, 2); //xdata
-			x_buff[i] = return_value(x_data);
-			x_avg = x_buff[i] + x_avg;
-			spi_read_new(0x10, &y_data, 2); //xdata
-			y_buff[i] = return_value(y_data);
-			y_avg = y_buff[i] + y_avg;
-			spi_read_new(0x12, &z_data, 2); //xdata
-			z_buff[i] = return_value(z_data);
-			z_avg = z_buff[i] + z_avg;
-			HAL_Delay(100);
-		}
-		x_avg = x_avg/20;
-		y_avg = y_avg/20;
-		z_avg = z_avg/20;
-		*/
-		sprintf(msg, "avg x: %d, y: %d, z:%d\n",(int)x_avg, y_avg, z_avg);
-		print_msg(msg);
+		start_zero();
+		HAL_Delay(100);
 		for (int i = 0; i < 20; i++)
 		{
-			HAL_Delay(800);
-			spi_read(0x0E, &data, 2); //xdata
-			data = swap_bytes(data);
-			x_accl[i] = return_value(data);
-			sprintf(msg, "in: x data (%d), (0x%x)\r\n", x_accl[i], x_accl[i]);
-			print_msg(msg);
-			//x_accl[i] = adxl362_read_x(&data);
-			//sprintf(msg, "fun x data (%d), (0x%x)\r\n", x_accl[i], x_accl[i]);
-			//print_msg(msg);
-			
-			
-			spi_read(0x10, &data, 2); //ydata
-			sprintf(msg, "full: y data (%d) , (0x%x)\r\n", data, data);
-			print_msg(msg);
-			/*Testing purposes for lsb and msb
-			spi_read(0x10, &data); //ydata
-			data = (uint8_t)data;
-			sprintf(msg, "lsb: y data (%d) , (0x%x)\r\n", data, data);
-			print_msg(msg);
-			spi_read(0x11, &data); //ydata
-			data = (uint8_t)data;
-			sprintf(msg, "msb: y data (%d) , (0x%x)\r\n", data, data);
-			
-			print_msg(msg);*/
-			//adxl362_read_y(&data);
-			//sprintf(msg, "a y data (%d), (0x%x)\r\n", y_accl[i],y_accl[i]);
-			print_msg(msg);
-			y_accl[i] = return_value(data);
-			y_accl[i] = y_accl[i] / 1000;
-			//y_accl[i] = y_accl[i] / (2000 / 2);
-			sprintf(msg, "return y data (%d), (0x%x)\r\n", y_accl[i],y_accl[i]);
+			HAL_Delay(100);
+			x_accl[i] = adxl362_get_x();
+			sprintf(msg, "x data (%d), (0x%x)\r\n", x_accl[i], x_accl[i]);
 			print_msg(msg);
 			
+			y_accl[i] = adxl362_get_y();
+			sprintf(msg, "y data (%d), (0x%x)\r\n", y_accl[i],y_accl[i]);
+			print_msg(msg);
 			
-			spi_read(0x12, &data, 2); //zdata
-			data = swap_bytes(data);
-			z_accl[i] = return_value(data);
+			z_accl[i] = adxl362_get_z();
 			sprintf(msg, "z data (%d)\r\n", z_accl[i]);
-			//print_msg(msg);
-			totvect[i] = sqrt(((x_accl[i] - x_avg)*(x_accl[i] - x_avg)) 
-			+ ((y_accl[i] - y_avg) * (y_accl[i] - y_avg)) 
-			+ ((z_buff[i] - z_avg) * (z_buff[i] - z_avg))); //should not be moving in the z direction
+			print_msg(msg);
+			
+			totvect[i] = sqrt(((x_accl[i] - x_avg)*(x_accl[i] - xZero)) 
+			+ ((y_accl[i] - yZero) * (y_accl[i] - yZero)) 
+			+ ((z_buff[i] - zZero) * (z_buff[i] - zZero))); //should not be moving in the z direction
 			
 			totave[i] = (totvect[i] + totvect[i - 1]) / 2 ;
-		sprintf(msg, "totave: %d\n",(int)totave[i]);
-		//print_msg(msg);
+			sprintf(msg, "totave: %d\n",(int)totave[i]);
+			print_msg(msg);
 			
     HAL_Delay(100);
     if(totave[i]>threshhold*10 && flag==0)
     {
-       step_count=step_count+1;
+      step_count=step_count+1;
 			oled_clear_screen();
 			SSD1306_GotoXY(0,0);
 			SSD1306_Puts("Steps:", &Font_7x10, white);
-				drawNumber(step_count);
-       flag=1;
+			drawNumber(step_count);
+      flag=1;
     }
     else if (totave[i] > threshhold && flag==1)
     {

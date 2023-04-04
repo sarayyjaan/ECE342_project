@@ -27,36 +27,30 @@ Project File Date:  04/03/2023
 <h2>Output:</h2>
 *** Using Compiler 'V6.19', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'ece342_project'
-../Core/Src/adxl362.c(24): warning: incompatible pointer types passing 'int16_t *' (aka 'short *') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
-        spi_read(0x0E, &pData, 2); //xdata
-                       ^~~~~~
+../Core/Src/main.c(361): warning: incompatible pointer types passing 'uint16_t *' (aka 'unsigned short *') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+                spi_read(0x0E, &data, 2); //xdata
+                               ^~~~~
 ../Core/Inc/main.h(69): note: passing argument to parameter 'pData' here
 HAL_StatusTypeDef spi_read(uint8_t regAddr, uint8_t *pData, uint8_t len);
                                                      ^
-../Core/Src/adxl362.c(34): warning: incompatible pointer types passing 'int16_t *' (aka 'short *') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
-        spi_read(0x10, &pData, 2); //xdata
-                       ^~~~~~
+../Core/Src/main.c(370): warning: incompatible pointer types passing 'uint16_t *' (aka 'unsigned short *') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+        spi_read(0x10, &data, 2); //ydata
+                       ^~~~~
 ../Core/Inc/main.h(69): note: passing argument to parameter 'pData' here
 HAL_StatusTypeDef spi_read(uint8_t regAddr, uint8_t *pData, uint8_t len);
                                                      ^
-../Core/Src/adxl362.c(42): warning: incompatible pointer types passing 'int16_t *' (aka 'short *') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
-        spi_read(0x12, &pData, 2); //xdata
-                       ^~~~~~
+../Core/Src/main.c(378): warning: incompatible pointer types passing 'uint16_t *' (aka 'unsigned short *') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+        spi_read(0x12, &data, 2); //zdata
+                       ^~~~~
 ../Core/Inc/main.h(69): note: passing argument to parameter 'pData' here
 HAL_StatusTypeDef spi_read(uint8_t regAddr, uint8_t *pData, uint8_t len);
                                                      ^
-../Core/Src/adxl362.c(69): warning: incompatible pointer types passing 'int16_t **' (aka 'short **') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
-        spi_read(0x0E, &pData, 2); //xdata
-                       ^~~~~~
-../Core/Inc/main.h(69): note: passing argument to parameter 'pData' here
-HAL_StatusTypeDef spi_read(uint8_t regAddr, uint8_t *pData, uint8_t len);
-                                                     ^
-4 warnings generated.
-compiling adxl362.c...
+3 warnings generated.
+compiling main.c...
 linking...
-Program Size: Code=23108 RO-data=2856 RW-data=24 ZI-data=4088  
+Program Size: Code=23108 RO-data=2832 RW-data=24 ZI-data=4088  
 FromELF: creating hex file...
-"ece342_project\ece342_project.axf" - 0 Error(s), 4 Warning(s).
+"ece342_project\ece342_project.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Software Packages used:</h2>
 

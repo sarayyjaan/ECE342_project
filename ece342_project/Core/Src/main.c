@@ -254,15 +254,15 @@ int main(void)
 	spi_write(SELF_TEST,&self_test);
 	print_msg("reading x\n");
 	
-	spi_read_old(0x08, &value); //xdata
+	spi_read_old(ADXL362_REG_XDATA, &value); //xdata
 	sprintf(msg, "x data (%d)(0x%x)\r\n", (int) value, value);
 	print_msg(msg);
 	
-	spi_read_old(0x09, &value); //ydata
+	spi_read_old(ADXL362_REG_YDATA, &value); //ydata
 	sprintf(msg, "y data (%d)\r\n", (int) value);
 	print_msg(msg);
 	
-	spi_read_old(0x0A, &value); //zdata
+	spi_read_old(ADXL362_REG_ZDATA, &value); //zdata
 	sprintf(msg, "z data (%d)\r\n", (int) value);
 	print_msg(msg);
 	
@@ -298,9 +298,9 @@ int main(void)
   {
 		start_zero();
 		HAL_Delay(100);
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < 10; i++)
 		{
-			HAL_Delay(100);
+			/*HAL_Delay(100);
 			x_accl[i] = adxl362_get_x();
 			sprintf(msg, "x data (%d), (0x%x)\r\n", x_accl[i], x_accl[i]);
 			print_msg(msg);
@@ -311,8 +311,22 @@ int main(void)
 			
 			z_accl[i] = adxl362_get_z();
 			sprintf(msg, "z data (%d)\r\n", z_accl[i]);
-			print_msg(msg);
+			print_msg(msg);*/
 			
+			spi_read_old(ADXL362_REG_XDATA, &value); //xdata
+			x_accl[i] = value;
+	sprintf(msg, "x data (%d)(0x%x)\r\n", (int) value, value);
+	print_msg(msg);
+	
+	spi_read_old(ADXL362_REG_YDATA, &value); //ydata
+			y_accl[i] = value;
+	sprintf(msg, "y data (%d)\r\n", (int) value);
+	print_msg(msg);
+	
+	spi_read_old(ADXL362_REG_ZDATA, &value); //zdata
+	z_accl[i] = value;
+	sprintf(msg, "z data (%d)\r\n", (int) value);
+	print_msg(msg);
 			totvect[i] = sqrt(((x_accl[i] - x_avg)*(x_accl[i] - xZero)) 
 			+ ((y_accl[i] - yZero) * (y_accl[i] - yZero)) 
 			+ ((z_buff[i] - zZero) * (z_buff[i] - zZero))); //should not be moving in the z direction
@@ -325,9 +339,10 @@ int main(void)
     if(totave[i]>threshhold*10 && flag==0)
     {
       step_count=step_count+1;
-			oled_clear_screen();
+			cleardisplay();
 			SSD1306_GotoXY(0,0);
 			SSD1306_Puts("Steps:", &Font_7x10, white);
+			
 			drawNumber(step_count);
       flag=1;
     }

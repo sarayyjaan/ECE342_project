@@ -173,6 +173,7 @@ void calibrate(){
 	z_avg = z_avg / 20;
 }
 
+
 uint16_t swap_bytes(uint16_t x) {
 	
   uint16_t bitmask = 0x00ff;
@@ -292,6 +293,7 @@ int main(void)
 	sprintf(msg, "zero x: %d, y: %d, z:%d\n",(int)xZero, yZero, zZero);
 	print_msg(msg);
 	calibrate();
+	calibrate_msb();
 	sprintf(msg, "avg x: %d, y: %d, z:%d\n",(int)x_avg, y_avg, z_avg);
 	print_msg(msg);
 	print_msg("Done calibrating\n");
@@ -300,40 +302,42 @@ int main(void)
 		start_zero();
 		uint8_t reg_awake = HAL_GPIO_ReadPin(INTMAP1_GPIO_Port,INTMAP1_Pin);
 		sprintf(msg, "%x:\n",(int)reg_awake);
-	print_msg(msg);
+		print_msg(msg);
+		reg_awake = reg_awake & 0b01000000;
 		if(HAL_GPIO_ReadPin(INTMAP1_GPIO_Port,INTMAP1_Pin) == 0b01000000){
 				print_msg("\nmotion detected\n");
 			}
-		HAL_Delay(100);
+		HAL_Delay(1000);
 		for (int i = 0; i < 10; i++)
 		{
-			/*HAL_Delay(100);
+			HAL_Delay(100);
 			x_accl[i] = adxl362_get_x();
-			sprintf(msg, "x data (%d), (0x%x)\r\n", x_accl[i], x_accl[i]);
+			sprintf(msg, "x data (%d), (0x%02hhX)\r\n", x_accl[i], x_accl[i]);
 			print_msg(msg);
 			
 			y_accl[i] = adxl362_get_y();
-			sprintf(msg, "y data (%d), (0x%x)\r\n", y_accl[i],y_accl[i]);
+			sprintf(msg, "y data (%d), (0x%02hhX)\r\n", y_accl[i],y_accl[i]);
 			print_msg(msg);
 			
 			z_accl[i] = adxl362_get_z();
-			sprintf(msg, "z data (%d)\r\n", z_accl[i]);
-			print_msg(msg);*/
+			sprintf(msg, "z data (%d), (0x%02hhX)\r\n", z_accl[i]);
+			print_msg(msg);
 			
 			spi_read_old(ADXL362_REG_XDATA, &value); //xdata
 			x_accl[i] = value;
-	sprintf(msg, "x data (%d)(0x%x)\r\n", (int) value, value);
-	print_msg(msg);
+			sprintf(msg, "x data (%d)(0x%x)\r\n", (int) value, value);
+			print_msg(msg);
 	
-	spi_read_old(ADXL362_REG_YDATA, &value); //ydata
+			spi_read_old(ADXL362_REG_YDATA, &value); //ydata
 			y_accl[i] = value;
-	sprintf(msg, "y data (%d)\r\n", (int) value);
-	print_msg(msg);
+			sprintf(msg, "y data (%d)\r\n", (int) value);
+			print_msg(msg);
 	
-	spi_read_old(ADXL362_REG_ZDATA, &value); //zdata
-	z_accl[i] = value;
-	sprintf(msg, "z data (%d)\r\n", (int) value);
-	print_msg(msg);
+			spi_read_old(ADXL362_REG_ZDATA, &value); //zdata
+			z_accl[i] = value;
+			sprintf(msg, "z data (%d)\r\n", (int) value);
+			print_msg(msg);
+			
 			totvect[i] = sqrt(((x_accl[i] - x_avg)*(x_accl[i] - xZero)) 
 			+ ((y_accl[i] - yZero) * (y_accl[i] - yZero)) 
 			+ ((z_buff[i] - zZero) * (z_buff[i] - zZero))); //should not be moving in the z direction

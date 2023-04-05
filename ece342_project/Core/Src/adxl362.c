@@ -76,7 +76,26 @@ void start_zero(){
 	zZero = 1000 - (zAvg - zZero);	
 }
 
-
+void calibrate_msb(){
+	//math sets the current acceleration to read zero
+	int xAvg = 0;
+	int yAvg = 0;
+	int zAvg = 0;
+	uint8_t value;
+	for(int i = 0; i < 100; i ++){
+			xAvg =  xAvg + spi_read_old(ADXL362_REG_XDATA, &value); //xdata
+			
+			yAvg = yAvg + spi_read_old(ADXL362_REG_YDATA, &value); //xdata
+			zAvg = zAvg + spi_read_old(ADXL362_REG_ZDATA, &value); //xdata
+	}
+	xAvg = xAvg / 100;
+	yAvg = yAvg / 100;
+	zAvg = zAvg / 100;
+	
+	xZero = 0 - (xAvg - xZero);
+	yZero = 0 - (yAvg - yZero);
+	zZero = 1000 - (zAvg - zZero);	
+}
 int16_t adxl362_read_x(int16_t *pData){
 	spi_read(0x0E, &pData, 2); //xdata
 	*pData = swap_bytes(*pData);

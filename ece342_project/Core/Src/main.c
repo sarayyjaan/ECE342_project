@@ -248,6 +248,7 @@ int main(void)
 	setting = 0x02;
 	spi_write(0x2D, &setting); //turn on measure*/
 	adxl362_init();
+	adxl362_activity_config();
 	//self test mode
 	print_msg("call self test\n");
 	uint8_t self_test=0x01;
@@ -297,6 +298,12 @@ int main(void)
   while (1)
   {
 		start_zero();
+		uint8_t reg_awake = HAL_GPIO_ReadPin(INTMAP1_GPIO_Port,INTMAP1_Pin);
+		sprintf(msg, "%x:\n",(int)reg_awake);
+	print_msg(msg);
+		if(HAL_GPIO_ReadPin(INTMAP1_GPIO_Port,INTMAP1_Pin) == 0b01000000){
+				print_msg("\nmotion detected\n");
+			}
 		HAL_Delay(100);
 		for (int i = 0; i < 10; i++)
 		{
@@ -717,8 +724,8 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, LED_display_Pin|CS_ACC_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LD1_Pin|PMOD_EN_Pin|LD3_Pin|OLED_RESET_Pin
-                          |LD2_Pin|VCCEN_Pin|D_C_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, LD1_Pin|INTMAP1_Pin|PMOD_EN_Pin|LD3_Pin
+                          |OLED_RESET_Pin|LD2_Pin|VCCEN_Pin|D_C_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(USB_PowerSwitchOn_GPIO_Port, USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
@@ -736,20 +743,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LD1_Pin PMOD_EN_Pin LD3_Pin OLED_RESET_Pin
-                           LD2_Pin VCCEN_Pin D_C_Pin */
-  GPIO_InitStruct.Pin = LD1_Pin|PMOD_EN_Pin|LD3_Pin|OLED_RESET_Pin
-                          |LD2_Pin|VCCEN_Pin|D_C_Pin;
+  /*Configure GPIO pins : LD1_Pin INTMAP1_Pin PMOD_EN_Pin LD3_Pin
+                           OLED_RESET_Pin LD2_Pin VCCEN_Pin D_C_Pin */
+  GPIO_InitStruct.Pin = LD1_Pin|INTMAP1_Pin|PMOD_EN_Pin|LD3_Pin
+                          |OLED_RESET_Pin|LD2_Pin|VCCEN_Pin|D_C_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : ADXL_INTMAP1_Pin */
-  GPIO_InitStruct.Pin = ADXL_INTMAP1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(ADXL_INTMAP1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : USB_PowerSwitchOn_Pin */
   GPIO_InitStruct.Pin = USB_PowerSwitchOn_Pin;

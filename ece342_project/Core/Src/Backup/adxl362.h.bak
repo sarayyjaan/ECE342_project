@@ -8,7 +8,8 @@ void adxl362_start(void);
 void adxl362_read_x(int16_t *pData);
 void adxl362_read_y(int16_t *pData);
 uint16_t convert2stoBinary(uint16_t inp);
-
+*/
+void start_zero();
  /* ADXL362 communication commands */
  #define ADXL362_WRITE_REG               0x0A
  #define ADXL362_READ_REG                0x0B

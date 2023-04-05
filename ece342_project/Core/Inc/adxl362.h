@@ -49,6 +49,7 @@ void adxl362_init(void);
 void adxl362_start(void);
 int16_t adxl362_read_x(int16_t *pData);
 void adxl362_read_y(int16_t *pData);
+void adxl362_activity_config();
 uint16_t convert2stoBinary(uint16_t inp);
 void start_zero();
 int16_t adxl362_get_x();

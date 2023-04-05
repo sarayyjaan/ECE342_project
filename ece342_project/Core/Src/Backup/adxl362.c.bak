@@ -4,6 +4,7 @@
 #include "spi.h"
 
 extern SPI_HandleTypeDef hspi1;
+extern int xZero, yZero, zZero;
 uint16_t convert2stoBinary(uint16_t inp){
 	inp = inp ^ 0x07ff; //xor with 1st 12 bits
 	inp = inp - 1;
@@ -11,25 +12,66 @@ uint16_t convert2stoBinary(uint16_t inp){
 }
 void adxl362_init(void){
 	
-	//adxl345, modify pwr_ctl writing 1, 
-	//set the measure bit, reset sleep bit in power_ctl
-	//data format register set the range
-	uint8_t setting = INACT_STILL_THRESH;
-	spi_write(ADXL362_REG_THRESH_INACT_L, &setting); //inactivity
+	uint8_t setting = 75;
+	spi_write(ADXL362_REG_THRESH_INACT_L, &setting); //sets stationary threshold to 1g
 	setting = 0x03; //sets range to 2g
-	spi_write(ADXL362_REG_FILTER_CTL, &setting); //general setting (filter ctl)
+	spi_write(ADXL362_REG_FILTER_CTL, &setting); //sets the sensor range to 2g
 	setting = BEGIN_MEASURE;
 	spi_write(ADXL362_REG_POWER_CTL, &setting); //turn on measure
 }
+int16_t adxl362_get_x(){
+	int16_t pData;
+	spi_read(0x0E, &pData, 2); //xdata
+	pData = swap_bytes(pData);
+	pData = return_value(pData);
+	//process to achieve desired reading
+	
+	pData = pData + xZero;
+	return pData;
+}
+int16_t adxl362_get_y(){
+	int16_t pData;
+	spi_read(0x10, &pData, 2); //xdata
+	pData = swap_bytes(pData);
+	pData = return_value(pData);
+	pData = pData + yZero;
+	return pData;
+}
+int16_t adxl362_get_z(){
+	int16_t pData;
+	spi_read(0x12, &pData, 2); //xdata
+	pData = swap_bytes(pData);
+	pData = return_value(pData);
+	pData = pData + zZero;
+	return pData;
+}
+void start_zero(){
+	//math sets the current acceleration to read zero
+	int xAvg = 0;
+	int yAvg = 0;
+	int zAvg = 0;
+	for(int i = 0; i < 100; i ++){
+			xAvg =  xAvg + adxl362_get_x();
+			yAvg = yAvg + adxl362_get_y();
+			zAvg = zAvg + adxl362_get_z();
+	}
+	xAvg = xAvg / 100;
+	yAvg = yAvg / 100;
+	zAvg = zAvg / 100;
+	
+	xZero = 0 - (xAvg - xZero);
+	yZero = 0 - (yAvg - yZero);
+	zZero = 1000 - (zAvg - zZero);	
+}
+
+
 int16_t adxl362_read_x(int16_t *pData){
 	spi_read(0x0E, &pData, 2); //xdata
 	*pData = swap_bytes(*pData);
 	*pData = return_value(*pData);
 	return *pData;
 }
-/*void adxl362_start(void){
-	spi_write(ADXL362_REG_THRESH_ACT_L, 0xFA);
-}*/
+
 /*
  #define ADXL362_REG_YDATA_L             0x10
  #define ADXL362_REG_YDATA_H             0x11

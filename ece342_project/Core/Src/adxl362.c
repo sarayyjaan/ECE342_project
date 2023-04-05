@@ -5,6 +5,9 @@
 
 extern SPI_HandleTypeDef hspi1;
 extern int xZero, yZero, zZero;
+void activity_detection(){
+	
+}
 uint16_t convert2stoBinary(uint16_t inp){
 	inp = inp ^ 0x07ff; //xor with 1st 12 bits
 	inp = inp - 1;
@@ -18,6 +21,15 @@ void adxl362_init(void){
 	spi_write(ADXL362_REG_FILTER_CTL, &setting); //sets the sensor range to 2g
 	setting = BEGIN_MEASURE;
 	spi_write(ADXL362_REG_POWER_CTL, &setting); //turn on measure
+}
+void adxl362_activity_config(){
+	uint8_t setting = 75;
+	setting = 0x01;
+	spi_write(ADXL362_REG_TIME_ACT, &setting); //sets activity time; this is ignored when set it wakeup mode
+	setting = 0x1E;
+	spi_write(ADXL362_REG_TIME_INACT_L, &setting); //sets inactivity time to 30 secs
+	setting = 0x0F;
+	spi_write(ADXL362_REG_ACT_INACT_CTL, &setting);//sets inact reference bits to enabled (set to referenced mode)
 }
 int16_t adxl362_get_x(){
 	int16_t pData;

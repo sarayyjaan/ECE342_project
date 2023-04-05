@@ -17,9 +17,18 @@ void adxl362_init(void){
 	
 	uint8_t setting = 75;
 	spi_write(ADXL362_REG_THRESH_INACT_L, &setting); //sets stationary threshold to 1g
+	
+	setting = 0xFF;
+	spi_write(0x20, &setting); //threshold active L
+	setting = 0x02;
+	spi_write(0x21, &setting); //threshold active H	
+	setting = 0x0F;
+	spi_write(0x22, &setting); //time act
+	
 	setting = 0x03; //sets range to 2g
 	spi_write(ADXL362_REG_FILTER_CTL, &setting); //sets the sensor range to 2g
 	setting = BEGIN_MEASURE;
+	//setting = 0x8; //wakeup mode
 	spi_write(ADXL362_REG_POWER_CTL, &setting); //turn on measure
 }
 void adxl362_activity_config(){

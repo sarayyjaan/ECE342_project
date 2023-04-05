@@ -295,6 +295,8 @@ int main(void)
 	sprintf(msg, "avg x: %d, y: %d, z:%d\n",(int)x_avg, y_avg, z_avg);
 	print_msg(msg);
 	print_msg("Done calibrating\n");
+	
+	int a=0;
   while (1)
   {
 		start_zero();
@@ -327,12 +329,12 @@ int main(void)
 	
 	spi_read_old(ADXL362_REG_YDATA, &value); //ydata
 			y_accl[i] = value;
-	sprintf(msg, "y data (%d)\r\n", (int) value);
+	sprintf(msg, "y data (%d)(0x%x)\r\n", (int) value, value);
 	print_msg(msg);
 	
 	spi_read_old(ADXL362_REG_ZDATA, &value); //zdata
 	z_accl[i] = value;
-	sprintf(msg, "z data (%d)\r\n", (int) value);
+	sprintf(msg, "z data (%d)(0x%x)\r\n", (int) value, value);
 	print_msg(msg);
 			totvect[i] = sqrt(((x_accl[i] - x_avg)*(x_accl[i] - xZero)) 
 			+ ((y_accl[i] - yZero) * (y_accl[i] - yZero)) 
@@ -342,15 +344,15 @@ int main(void)
 			sprintf(msg, "totave: %d\n",(int)totave[i]);
 			print_msg(msg);
 			
-    HAL_Delay(100);
+    //HAL_Delay(100);
     if(totave[i]>threshhold*10 && flag==0)
     {
       step_count=step_count+1;
-			cleardisplay();
-			SSD1306_GotoXY(0,0);
-			SSD1306_Puts("Steps:", &Font_7x10, white);
+			//cleardisplay();
+			//SSD1306_GotoXY(0,0);
+			//SSD1306_Puts("Steps:", &Font_7x10, white);
 			
-			drawNumber(step_count);
+			//drawNumber(step_count);
       flag=1;
     }
     else if (totave[i] > threshhold && flag==1)
@@ -361,6 +363,23 @@ int main(void)
     {
       flag=0; //deassert
     }
+		spi_read_old(ADXL362_REG_STATUS, &value);
+		value = value & 0x10;
+		if(value == 0x10){
+			print_msg("ACT Bit = 1\n");
+			HAL_Delay(500);
+			a++;
+			sprintf(msg, "%d",a);
+			cleardisplay();
+			SSD1306_GotoXY(0,0);
+			SSD1306_Puts("Steps:", &Font_7x10, white);
+			SSD1306_Puts(msg, &Font_7x10, white);
+			drawNumber(step_count);
+		}
+		else{
+			print_msg("ACT Bit=0\n");
+		}
+		//HAL_Delay(500);
 	}
 		sprintf(msg, "step_count: %d\n",(int)step_count);
 		print_msg(msg);

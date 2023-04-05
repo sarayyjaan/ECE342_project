@@ -85,13 +85,13 @@ void testing_read(void){
 	char msg[100];
 	
 	if(value == 0xAD){
-		print_msg("seems ok\n");
+		//print_msg("seems ok\n");
 		sprintf(msg, "tis this (0x%x)\r\n", value);
-		print_msg(msg);
+		//print_msg(msg);
 	}
 	else{
 		sprintf(msg, "Wrong product id (0x%x)\r\n", value);
-		print_msg(msg);
+		//print_msg(msg);
 		//print_msg("No");
 	}
 }
@@ -99,7 +99,7 @@ void testing_read(void){
 int x_buff[20];
 int y_buff[20];
 int z_buff[20];
-int x_accl[20], y_accl[20], z_accl[20];
+int8_t x_accl[20], y_accl[20], z_accl[20];
 int totave[20], totvect[20];
 int step_count = 0;
 int threshhold = 100;
@@ -144,7 +144,7 @@ uint16_t return_value(uint16_t inp){
 int x_avg, y_avg, z_avg;
 int xZero, yZero, zZero;
 void calibrate(){
-	print_msg("Calibrating ..\n");
+	//print_msg("Calibrating ..\n");
 	int data = 0;
 	for (int i = 0;i<20;i++){
 		x_buff[i] = adxl362_get_x();
@@ -251,101 +251,104 @@ int main(void)
 	adxl362_init();
 	adxl362_activity_config();
 	//self test mode
-	print_msg("call self test\n");
+	//print_msg("call self test\n");
 	uint8_t self_test=0x01;
 	spi_write(SELF_TEST,&self_test);
-	print_msg("reading x\n");
+	//print_msg("reading x\n");
 	
 	spi_read_old(ADXL362_REG_XDATA, &value); //xdata
 	sprintf(msg, "x data (%d)(0x%x)\r\n", (int) value, value);
-	print_msg(msg);
+	//print_msg(msg);
 	
 	spi_read_old(ADXL362_REG_YDATA, &value); //ydata
 	sprintf(msg, "y data (%d)\r\n", (int) value);
-	print_msg(msg);
+	//print_msg(msg);
 	
 	spi_read_old(ADXL362_REG_ZDATA, &value); //zdata
 	sprintf(msg, "z data (%d)\r\n", (int) value);
-	print_msg(msg);
+	//print_msg(msg);
 	
 	//deassert st
 	self_test=0x00;
 	spi_write(0x2E,&self_test);
 	uint16_t data=0;
 	
-	oled_init();
-	drawline(0x0,0x0, 0x5F, 0x3F);
+	//oled_init();
 	HAL_Delay(500);
-	cleardisplay();
-	drawpixel(2, 2);
+	//cleardisplay();
+	//drawpixel(2, 2);
 	HAL_Delay(500);
-	oled_clear_screen();
-	HAL_Delay(500);
-	oled_clear_screen();
+	//oled_clear_screen();
 	
 	extern FontDef_t Font_7x10;
-	SSD1306_COLOR_t white = SSD1306_COLOR_WHITE;
+	//SSD1306_COLOR_t white = SSD1306_COLOR_WHITE;
 	
-	SSD1306_Puts("Steps:", &Font_7x10, white);
+//	SSD1306_Puts("Steps:", &Font_7x10, white);
 	HAL_Delay(1000);
 	//calibrating to get avg values
 	start_zero();
 	sprintf(msg, "zero x: %d, y: %d, z:%d\n",(int)xZero, yZero, zZero);
-	print_msg(msg);
+	//print_msg(msg);
 	calibrate();
 	calibrate_msb();
 	sprintf(msg, "avg x: %d, y: %d, z:%d\n",(int)x_avg, y_avg, z_avg);
-	print_msg(msg);
-	print_msg("Done calibrating\n");
+//	print_msg(msg);
+	//print_msg("Done calibrating\n");
 	
 	int a=0;
+	int num = 0;
+	print_msg("time,x_axis,y_axis,z_axis\n");
   while (1)
   {
 		start_zero();
 		uint8_t reg_awake = HAL_GPIO_ReadPin(INTMAP1_GPIO_Port,INTMAP1_Pin);
-		sprintf(msg, "%x:\n",(int)reg_awake);
-		print_msg(msg);
+		//sprintf(msg, "%x:\n",(int)reg_awake);
+		//print_msg(msg);
 		reg_awake = reg_awake & 0b01000000;
 		if(HAL_GPIO_ReadPin(INTMAP1_GPIO_Port,INTMAP1_Pin) == 0b01000000){
-				print_msg("\nmotion detected\n");
+			//	print_msg("\nmotion detected\n");
 			}
 		HAL_Delay(1000);
 		for (int i = 0; i < 10; i++)
 		{
 			HAL_Delay(100);
-			x_accl[i] = adxl362_get_x();
-			sprintf(msg, "x data (%d), (0x%02hhX)\r\n", x_accl[i], x_accl[i]);
+			/*x_accl[i] = adxl362_get_x();
+			//sprintf(msg, "x data (%d), (0x%02hhX)\r\n", x_accl[i], x_accl[i]);
 			print_msg(msg);
 			
 			y_accl[i] = adxl362_get_y();
-			sprintf(msg, "y data (%d), (0x%02hhX)\r\n", y_accl[i],y_accl[i]);
+			//sprintf(msg, "y data (%d), (0x%02hhX)\r\n", y_accl[i],y_accl[i]);
+			sprintf(msg, "y, %d\n", y_accl[i]);
 			print_msg(msg);
 			
 			z_accl[i] = adxl362_get_z();
 			sprintf(msg, "z data (%d), (0x%02hhX)\r\n", z_accl[i]);
 			print_msg(msg);
-			
+			*/
 			spi_read_old(ADXL362_REG_XDATA, &value); //xdata
-			x_accl[i] = value;
-			sprintf(msg, "x data (%d)(0x%x)\r\n", (int) value, value);
-			print_msg(msg);
-	
+			x_accl[i] = (int8_t)value;
+			//sprintf(msg, "x data (%d)(0x%x)\r\n", (int) value, value);
+			//sprintf(msg, "%d,%d,", num, x_accl[i]);sprintf(msg, "%d,%d,", num, x_accl[i]);//sprintf(msg, "y data (%d)(0x%x)\r\n", (int) value, value);
+			//print_msg(msg);
 			spi_read_old(ADXL362_REG_YDATA, &value); //ydata
-			y_accl[i] = value;
-	sprintf(msg, "y data (%d)(0x%x)\r\n", (int) value, value);
-	print_msg(msg);
+			y_accl[i] = (int8_t)value;
+			//sprintf(msg, "%d,%d\n", num, y_accl[i]);//sprintf(msg, "y data (%d)(0x%x)\r\n", (int) value, value);
+			//print_msg(msg);
 	
-	spi_read_old(ADXL362_REG_ZDATA, &value); //zdata
-	z_accl[i] = value;
-	sprintf(msg, "z data (%d)(0x%x)\r\n", (int) value, value);
-	print_msg(msg);
+			spi_read_old(ADXL362_REG_ZDATA, &value); //zdata
+			z_accl[i] = (int8_t)value;
+			//sprintf(msg, "z:%d,", z_accl[i]);//sprintf(msg, "z data (%d)(0x%x)\r\n", (int) value, value);
+			//print_msg(msg);
+			sprintf(msg, "%d,%d,%d,%d\n", num, x_accl[i],y_accl[i],z_accl[i]);
+			print_msg(msg);
+			//computing the dot products
 			totvect[i] = sqrt(((x_accl[i] - x_avg)*(x_accl[i] - xZero)) 
 			+ ((y_accl[i] - yZero) * (y_accl[i] - yZero)) 
 			+ ((z_buff[i] - zZero) * (z_buff[i] - zZero))); //should not be moving in the z direction
-			
+			num++;
 			totave[i] = (totvect[i] + totvect[i - 1]) / 2 ;
-			sprintf(msg, "totave: %d\n",(int)totave[i]);
-			print_msg(msg);
+			//sprintf(msg, "totave: %d\n",(int)totave[i]);
+			//print_msg(msg);
 			
     //HAL_Delay(100);
     if(totave[i]>threshhold*10 && flag==0)
@@ -369,23 +372,23 @@ int main(void)
 		spi_read_old(ADXL362_REG_STATUS, &value);
 		value = value & 0x10;
 		if(value == 0x10){
-			print_msg("ACT Bit = 1\n");
+			//print_msg("ACT Bit = 1\n");
 			HAL_Delay(500);
 			a++;
-			sprintf(msg, "%d",a);
-			cleardisplay();
-			SSD1306_GotoXY(0,0);
-			SSD1306_Puts("Steps:", &Font_7x10, white);
-			SSD1306_Puts(msg, &Font_7x10, white);
-			drawNumber(step_count);
+			//sprintf(msg, "%d",a);
+			//cleardisplay();
+			//SSD1306_GotoXY(0,0);
+			//SSD1306_Puts("Steps:", &Font_7x10, white);
+			//SSD1306_Puts(msg, &Font_7x10, white);
+			//drawNumber(step_count);
 		}
 		else{
-			print_msg("ACT Bit=0\n");
+			//print_msg("ACT Bit=0\n");
 		}
 		//HAL_Delay(500);
 	}
 		sprintf(msg, "step_count: %d\n",(int)step_count);
-		print_msg(msg);
+		//print_msg(msg);
 	if( 0 == 1){
 		spi_read(0x0E, &data, 2); //xdata
 		data = return_value(data);

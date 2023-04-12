@@ -20,7 +20,7 @@ void adxl362_init(void){
 	
 	setting = 0xFF;
 	spi_write(0x20, &setting); //threshold active L
-	setting = 0x02;
+	setting = 0x01;
 	spi_write(0x21, &setting); //threshold active H	
 	setting = 0x0F;
 	spi_write(0x22, &setting); //time act
@@ -93,9 +93,8 @@ void calibrate_msb(){
 	uint8_t value;
 	for(int i = 0; i < 100; i ++){
 			xAvg =  xAvg + (int)spi_read_old(ADXL362_REG_XDATA, &value); //xdata
-			
-			yAvg = yAvg + (int)spi_read_old(ADXL362_REG_YDATA, &value); //xdata
-			zAvg = zAvg + (int)spi_read_old(ADXL362_REG_ZDATA, &value); //xdata
+			yAvg = yAvg + (int)spi_read_old(ADXL362_REG_YDATA, &value); //ydata
+			zAvg = zAvg + (int)spi_read_old(ADXL362_REG_ZDATA, &value); //zdata
 	}
 	xAvg = xAvg / 100;
 	yAvg = yAvg / 100;

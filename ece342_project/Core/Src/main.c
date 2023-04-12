@@ -18,7 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include <string.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <math.h>
@@ -81,6 +81,7 @@ static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 /* USER CODE BEGIN PFP */
 float mean(float data[], int len);
+void thresholding(int8_t y[], int lag, float threshold, float influence);
 void print_msg(char * msg);
 void testing_read(void);
 uint16_t twosToBin(uint16_t input);
@@ -91,29 +92,51 @@ float stddev(float data[], int len);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+char msg[100];
+void thresholding(int8_t y[], int lag, float threshold, float influence) {
+    //memset(signals, 0, sizeof(int) * SAMPLE_LENGTH);
+    float filteredY[20];
+    memcpy(filteredY, y, sizeof(float) * SAMPLE_LENGTH);
+    float avgFilter[20];
+    float stdFilter[20];
+
+    avgFilter[lag - 1] = mean(y, lag);
+    stdFilter[lag - 1] = stddev(y, lag);
+
+    for (int i = lag; i < SAMPLE_LENGTH; i++) {
+        if (fabsf(y[i] - avgFilter[i-1]) > threshold * stdFilter[i-1]) {
+            if (y[i] > avgFilter[i-1]) {
+              //  step_count++;
+							//sprintf(msg, "%d", step_count);
+							//print_msg(msg);
+            } else {
+                //signals[i] = -1;
+            }
+            filteredY[i] = influence * y[i] + (1 - influence) * filteredY[i-1];
+        } else {
+            //signals[i] = 0;
+        }
+        avgFilter[i] = mean(filteredY + i-lag, lag);
+        stdFilter[i] = stddev(filteredY + i-lag, lag);
+    }
+}
 float mean(float data[], int len) {
     float sum = 0.0, mean = 0.0;
-
     int i;
     for(i=0; i<len; ++i) {
         sum += data[i];
     }
-
     mean = sum/len;
     return mean;
-
-
 }
 
 float stddev(float data[], int len) {
     float the_mean = mean(data, len);
     float standardDeviation = 0.0;
-
     int i;
     for(i=0; i<len; ++i) {
         standardDeviation += pow(data[i] - the_mean, 2);
     }
-
     return sqrt(standardDeviation/len);
 }
 
@@ -167,7 +190,8 @@ void calibrate(){
 	//print_msg("Calibrating ..\n");
 	int data = 0;
 	for (int i = 0;i<20;i++){
-		x_buff[i] = adxl362_get_x();
+		spi_read_old(ADXL362_REG_XDATA, &data);
+		x_buff[i] = (int8_t)data;
 			/*spi_read(0x0E, &data, 2); //xdata
 			data = swap_bytes(data);
 			x_buff[i] = return_value(data);
@@ -176,7 +200,8 @@ void calibrate(){
 	}
 	x_avg = x_avg / 20;
 	for (int i = 0;i<20;i++){
-		y_buff[i] = adxl362_get_y();
+		spi_read_old(ADXL362_REG_YDATA, &data);
+		y_buff[i] = (int8_t)data;
 			/*spi_read(0x10, &data, 2); //xdata
 			data = swap_bytes(data);
 			y_buff[i] = return_value(data*/
@@ -184,7 +209,8 @@ void calibrate(){
 	}
 	y_avg = y_avg / 20;
 	for (int i = 0;i<20;i++){
-		z_buff[i] = adxl362_get_z();
+		spi_read_old(ADXL362_REG_ZDATA, &data);
+			z_buff[i] = (int8_t)data;
 			/*spi_read(0x12, &data, 2); //xdata
 			data = swap_bytes(data);
 			z_buff[i] = return_value(data);*/
@@ -319,6 +345,10 @@ int main(void)
 	
 	int a=0;
 	int num = 0;
+	int lag = 20;
+		float threshold = 5;
+    float influence = 0;
+    uint8_t z[10];
 	print_msg("time,x_axis,y_axis,z_axis\n");
   while (1)
   {
@@ -353,16 +383,17 @@ int main(void)
 			print_msg(msg);
 			//computing the dot products
 			totvect[i] = sqrt(((x_accl[i] - x_avg)*(x_accl[i] - xZero)) 
-			+ ((y_accl[i] - yZero) * (y_accl[i] - yZero)) 
-			+ ((z_accl[i] - zZero) * (z_accl[i] - zZero))); //should not be moving in the z direction
+			+ ((y_accl[i] - y_avg) * (y_accl[i] - yZero)) 
+			+ ((z_accl[i] - z_avg) * (z_accl[i] - zZero))); //should not be moving in the z direction
 			num++;
 			totave[i] = (totvect[i] + totvect[i - 1]) / 2 ;
 			sprintf(msg, "totave: %d\n",(int)totave[i]);
 			print_msg(msg);
 			
     //HAL_Delay(100);
-    if(totave[i]>threshhold && flag==0)
+    if((totave[i]>threshhold && flag==0))
     {
+			print_msg("Step taken\n");
       step_count++;
 			cleardisplay();
 			SSD1306_GotoXY(0,0);
@@ -380,9 +411,11 @@ int main(void)
     {
       flag=0; //deassert
     }
+	//	thresholding(z_accl, lag, threshold, influence);
 		spi_read_old(ADXL362_REG_STATUS, &value);
 		value = value & 0x10;
-		if(value == 0x10){
+		if(value == 0x10 &&(abs(x_accl[i]>0x09 ||y_accl[i]>0x09)))
+			{
 			//print_msg("ACT Bit = 1\n");
 			HAL_Delay(500);
 			a++;

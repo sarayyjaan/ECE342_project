@@ -33,7 +33,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define SAMPLE_LENGTH 100
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -56,6 +56,15 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
 /* USER CODE BEGIN PV */
 I2C_HandleTypeDef hi2c1;
+char *msg;
+int8_t x_accl[20], y_accl[20], z_accl[20];
+int totave[20], totvect[20];
+int step_count = 0;
+int threshhold = 100;
+int flag = 0;
+int x_avg, y_avg, z_avg;
+int xZero, yZero, zZero;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -69,11 +78,68 @@ static void MX_TIM6_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 /* USER CODE BEGIN PFP */
-//uint16_t swap_bytes(uint16_t x);
+void thresholding(float y[], int lag, float threshold, float influence);
+float mean(float data[], int len);
+void print_msg(char * msg);
+void testing_read(void);
+uint16_t twosToBin(uint16_t input);
+uint16_t return_value(uint16_t inp);
+uint16_t swap_bytes(uint16_t x);
+float stddev(float data[], int len);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void thresholding(float y[], int lag, float threshold, float influence) {
+    //memset(signals, 0, sizeof(int) * SAMPLE_LENGTH);
+    float filteredY[SAMPLE_LENGTH];
+    memcpy(filteredY, y, sizeof(float) * SAMPLE_LENGTH);
+    float avgFilter[SAMPLE_LENGTH];
+    float stdFilter[SAMPLE_LENGTH];
+
+    avgFilter[lag - 1] = mean(y, lag);
+    stdFilter[lag - 1] = stddev(y, lag);
+
+    for (int i = lag; i < SAMPLE_LENGTH; i++) {
+        if (fabsf(y[i] - avgFilter[i-1]) > threshold * stdFilter[i-1]) {
+            if (y[i] > avgFilter[i-1]) {
+                step_count++;
+							sprintf(msg, "%d", step_count);
+							print_msg(msg);
+            } else {
+                //signals[i] = -1;
+            }
+            filteredY[i] = influence * y[i] + (1 - influence) * filteredY[i-1];
+        } else {
+            //signals[i] = 0;
+        }
+        avgFilter[i] = mean(filteredY + i-lag, lag);
+        stdFilter[i] = stddev(filteredY + i-lag, lag);
+    }
+}
+float mean(float data[], int len) {
+    float sum = 0.0, mean = 0.0;
+
+    int i;
+    for(i=0; i<len; ++i) {
+        sum += data[i];
+    }
+
+    mean = sum/len;
+    return mean;
+}
+
+float stddev(float data[], int len) {
+    float the_mean = mean(data, len);
+    float standardDeviation = 0.0;
+
+    int i;
+    for(i=0; i<len; ++i) {
+        standardDeviation += pow(data[i] - the_mean, 2);
+    }
+    return sqrt(standardDeviation/len);
+}
+
 void print_msg(char * msg) {
   HAL_UART_Transmit(&huart3, (uint8_t *)msg, strlen(msg), 100);
 }
@@ -85,9 +151,9 @@ void testing_read(void){
 	char msg[100];
 	
 	if(value == 0xAD){
-		//print_msg("seems ok\n");
+		print_msg("seems ok\n");
 		sprintf(msg, "tis this (0x%x)\r\n", value);
-		//print_msg(msg);
+		print_msg(msg);
 	}
 	else{
 		sprintf(msg, "Wrong product id (0x%x)\r\n", value);
@@ -96,14 +162,6 @@ void testing_read(void){
 	}
 }
 
-int x_buff[20];
-int y_buff[20];
-int z_buff[20];
-int8_t x_accl[20], y_accl[20], z_accl[20];
-int totave[20], totvect[20];
-int step_count = 0;
-int threshhold = 100;
-int flag = 0;
 uint16_t twosToBin(uint16_t input){	
 	
 	//flip all 11 bits
@@ -130,21 +188,11 @@ uint16_t return_value(uint16_t inp){
 	}
 	
 	return result;	
-	/*if(inp>=0x8000){
-			inp = inp ^ 0x07ff; //get's the 2s complement
-			inp= inp-1; //adds 1
-			inp = inp & 0x07ff; //removes 1st 4 sign extended bits
-			inp = 0 - inp;
-		}else{
-			inp = inp & 0x07ff;
-		}
-	return inp;*/
 };
 
-int x_avg, y_avg, z_avg;
-int xZero, yZero, zZero;
 void calibrate(){
 	//print_msg("Calibrating ..\n");
+	int x_buff[20], y_buff[20], z_buff[20];
 	int data = 0;
 	for (int i = 0;i<20;i++){
 		x_buff[i] = adxl362_get_x();
@@ -251,7 +299,7 @@ int main(void)
 	adxl362_init();
 	adxl362_activity_config();
 	//self test mode
-	//print_msg("call self test\n");
+	print_msg("call self test\n");
 	uint8_t self_test=0x01;
 	spi_write(SELF_TEST,&self_test);
 	//print_msg("reading x\n");
@@ -289,17 +337,29 @@ int main(void)
 	start_zero();
 	sprintf(msg, "zero x: %d, y: %d, z:%d\n",(int)xZero, yZero, zZero);
 	//print_msg(msg);
-	calibrate();
-	calibrate_msb();
+	//calibrate();
+//	calibrate_msb();
 	sprintf(msg, "avg x: %d, y: %d, z:%d\n",(int)x_avg, y_avg, z_avg);
 //	print_msg(msg);
 	//print_msg("Done calibrating\n");
 	
-	int a=0;
+	//int a=0;
 	int num = 0;
+	 printf("Hello, World!\n");
+    int lag = 20;
+		float threshold = 5;
+    float influence = 0;
+    uint8_t z[10];
 	print_msg("time,x_axis,y_axis,z_axis\n");
   while (1)
   {
+
+    //thresholding(y, signal,  lag, threshold, influence);
+		for(int i = 0; i<20;i++){
+			spi_read_old(ADXL362_REG_ZDATA, &value); //zdata
+			z[i] = (int8_t)value;
+		}
+		thresholding(z,  lag, threshold, influence);
 		start_zero();
 		uint8_t reg_awake = HAL_GPIO_ReadPin(INTMAP1_GPIO_Port,INTMAP1_Pin);
 		//sprintf(msg, "%x:\n",(int)reg_awake);
@@ -312,39 +372,27 @@ int main(void)
 		for (int i = 0; i < 10; i++)
 		{
 			HAL_Delay(100);
-			/*x_accl[i] = adxl362_get_x();
-			//sprintf(msg, "x data (%d), (0x%02hhX)\r\n", x_accl[i], x_accl[i]);
-			print_msg(msg);
-			
+			//reading 12 bits
+			/*
+			x_accl[i] = adxl362_get_x();
 			y_accl[i] = adxl362_get_y();
-			//sprintf(msg, "y data (%d), (0x%02hhX)\r\n", y_accl[i],y_accl[i]);
-			sprintf(msg, "y, %d\n", y_accl[i]);
-			print_msg(msg);
-			
 			z_accl[i] = adxl362_get_z();
-			sprintf(msg, "z data (%d), (0x%02hhX)\r\n", z_accl[i]);
+			sprintf(msg, "%d,%d,%d,%d\n", num, x_accl[i],y_accl[i],z_accl[i]);
 			print_msg(msg);
 			*/
+			//reading from 8 bit registers
 			spi_read_old(ADXL362_REG_XDATA, &value); //xdata
 			x_accl[i] = (int8_t)value;
-			//sprintf(msg, "x data (%d)(0x%x)\r\n", (int) value, value);
-			//sprintf(msg, "%d,%d,", num, x_accl[i]);sprintf(msg, "%d,%d,", num, x_accl[i]);//sprintf(msg, "y data (%d)(0x%x)\r\n", (int) value, value);
-			//print_msg(msg);
 			spi_read_old(ADXL362_REG_YDATA, &value); //ydata
 			y_accl[i] = (int8_t)value;
-			//sprintf(msg, "%d,%d\n", num, y_accl[i]);//sprintf(msg, "y data (%d)(0x%x)\r\n", (int) value, value);
-			//print_msg(msg);
-	
 			spi_read_old(ADXL362_REG_ZDATA, &value); //zdata
 			z_accl[i] = (int8_t)value;
-			//sprintf(msg, "z:%d,", z_accl[i]);//sprintf(msg, "z data (%d)(0x%x)\r\n", (int) value, value);
-			//print_msg(msg);
 			sprintf(msg, "%d,%d,%d,%d\n", num, x_accl[i],y_accl[i],z_accl[i]);
 			print_msg(msg);
 			//computing the dot products
-			totvect[i] = sqrt(((x_accl[i] - x_avg)*(x_accl[i] - xZero)) 
+			/*totvect[i] = sqrt(((x_accl[i] - x_avg)*(x_accl[i] - xZero)) 
 			+ ((y_accl[i] - yZero) * (y_accl[i] - yZero)) 
-			+ ((z_buff[i] - zZero) * (z_buff[i] - zZero))); //should not be moving in the z direction
+			+ ((z_buff[i] - zZero) * (z_buff[i] - zZero)));*/ //should not be moving in the z direction
 			num++;
 			totave[i] = (totvect[i] + totvect[i - 1]) / 2 ;
 			//sprintf(msg, "totave: %d\n",(int)totave[i]);
@@ -374,7 +422,7 @@ int main(void)
 		if(value == 0x10){
 			//print_msg("ACT Bit = 1\n");
 			HAL_Delay(500);
-			a++;
+	//		a++;
 			//sprintf(msg, "%d",a);
 			//cleardisplay();
 			//SSD1306_GotoXY(0,0);

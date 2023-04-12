@@ -414,10 +414,11 @@ int main(void)
 	//	thresholding(z_accl, lag, threshold, influence);
 		spi_read_old(ADXL362_REG_STATUS, &value);
 		value = value & 0x10;
-		if(value == 0x10 &&(abs(x_accl[i]>0x09 ||y_accl[i]>0x09)))
-			{
+
+		if(value == 0x10 && (abs(x_accl[i])>0x09 || abs(y_accl[i]>0x09))){
+
 			//print_msg("ACT Bit = 1\n");
-			HAL_Delay(500);
+			//HAL_Delay(500);
 			a++;
 			
 			cleardisplay();

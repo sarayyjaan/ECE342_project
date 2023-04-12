@@ -92,10 +92,10 @@ void calibrate_msb(){
 	int zAvg = 0;
 	uint8_t value;
 	for(int i = 0; i < 100; i ++){
-			xAvg =  xAvg + spi_read_old(ADXL362_REG_XDATA, &value); //xdata
+			xAvg =  xAvg + (int)spi_read_old(ADXL362_REG_XDATA, &value); //xdata
 			
-			yAvg = yAvg + spi_read_old(ADXL362_REG_YDATA, &value); //xdata
-			zAvg = zAvg + spi_read_old(ADXL362_REG_ZDATA, &value); //xdata
+			yAvg = yAvg + (int)spi_read_old(ADXL362_REG_YDATA, &value); //xdata
+			zAvg = zAvg + (int)spi_read_old(ADXL362_REG_ZDATA, &value); //xdata
 	}
 	xAvg = xAvg / 100;
 	yAvg = yAvg / 100;

@@ -1,7 +1,6 @@
 # ECE342_project
 
-Hello
-
+Accelemeter utilized:
 
 -pa4, cs accelerometer
 -pa3, cs for pmod

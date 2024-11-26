@@ -1,6 +1,6 @@
 # ECE342_project
-
-Accelemeter utilized:
+Pedometer detecting steps using samples from an accelerometer and displaying onto an oLED screen.
+Accelerometer utilized:ADXL362
 
 -pa4, cs accelerometer
 -pa3, cs for pmod
